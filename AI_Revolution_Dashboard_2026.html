@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The AI Revolution 2026 | Comprehensive Interactive Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1e40af;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-secondary: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 100%);
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-header {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--gray);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--dark-secondary);
+            color: var(--light);
+        }
+
+        nav a.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Page Headers */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--light) 0%, var(--gray) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--dark-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .stat-card.green::before { background: linear-gradient(90deg, var(--success), #34d399); }
+        .stat-card.orange::before { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+        .stat-card.red::before { background: linear-gradient(90deg, var(--danger), #f87171); }
+        .stat-card.purple::before { background: linear-gradient(90deg, var(--secondary), #a78bfa); }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--light);
+        }
+
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        /* Chart Grid */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+
+        .chart-container {
+            background: var(--dark-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .chart-container.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-subtitle {
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+        }
+
+        .chart-wrapper.tall {
+            height: 450px;
+        }
+
+        /* Insights Section */
+        .insights-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .insights-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .insight-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .insight-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .insight-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .insight-content p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .data-table td {
+            font-size: 0.95rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        select {
+            background: var(--dark);
+            border: 1px solid var(--border);
+            color: var(--light);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Progress Bars */
+        .progress-item {
+            margin-bottom: 1.25rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .progress-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: var(--dark);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+
+        /* Story Section */
+        .story-section {
+            background: var(--dark-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .story-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .story-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary), var(--success));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 2px solid var(--dark-secondary);
+        }
+
+        .timeline-year {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-year.blue { color: var(--primary); }
+        .timeline-year.green { color: var(--success); }
+        .timeline-year.purple { color: var(--secondary); }
+
+        .timeline-text {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav {
+                justify-content: center;
+            }
+
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-wrapper {
+                height: 300px;
+            }
+        }
+
+        /* Plotly overrides */
+        .js-plotly-plot .plotly .modebar {
+            top: 5px !important;
+            right: 5px !important;
+        }
+
+        .js-plotly-plot .plotly .modebar-btn {
+            font-size: 14px !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-header">
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+                <span class="logo-text">AI Revolution 2026</span>
+            </div>
+            <nav>
+                <a href="#" onclick="showPage('overview')" class="active" data-page="overview">Overview</a>
+                <a href="#" onclick="showPage('adoption')" data-page="adoption">Adoption Trends</a>
+                <a href="#" onclick="showPage('sectors')" data-page="sectors">Sectors</a>
+                <a href="#" onclick="showPage('global')" data-page="global">Global View</a>
+                <a href="#" onclick="showPage('usecases')" data-page="usecases">Use Cases</a>
+                <a href="#" onclick="showPage('impact')" data-page="impact">Impact & ROI</a>
+                <a href="#" onclick="showPage('workforce')" data-page="workforce">Workforce</a>
+                <a href="#" onclick="showPage('perspective')" data-page="perspective">Fendry's Perspective</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- ==================== OVERVIEW PAGE ==================== -->
+        <section id="overview" class="page active">
+            <div class="page-header">
+                <h1>The State of AI Revolution</h1>
+                <p>A comprehensive data story of transition and transformation (2020-2026)</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🌐</div>
+                    <div class="stat-label">Global AI Adoption</div>
+                    <div class="stat-value">70%</div>
+                    <span class="stat-change positive">↑ +14% YoY</span>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-label">Enterprise Adoption</div>
+                    <div class="stat-value">85%</div>
+                    <span class="stat-change positive">↑ +7% from 2024</span>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-label">Productivity Gain</div>
+                    <div class="stat-value">37%</div>
+                    <span class="stat-change positive">↑ Avg. Efficiency Increase</span>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-label">Total AI Investment</div>
+                    <div class="stat-value">$184B</div>
+                    <span class="stat-change positive">↑ +52% Growth</span>
+                </div>
+            </div>
+
+            <div class="story-section">
+                <h2>📖 The AI Journey</h2>
+                <div class="story-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year blue">2020-2021: The Awakening</div>
+                        <p class="timeline-text">The pandemic accelerated digital transformation. Early adopters in tech and finance experimented with AI for automation and remote work solutions. Adoption was cautious but purposeful, with enterprise AI adoption around 15-22%.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year green">2022-2023: The Explosion</div>
+                        <p class="timeline-text">ChatGPT and generative AI captured public imagination, triggering explosive growth across all sectors. GenAI reached 100 million users in just 2 months—the fastest adoption of any technology in history. Enterprise adoption surged to 55-65%.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year purple">2024-2026: The Integration</div>
+                        <p class="timeline-text">Companies moved from experimentation to strategic integration. ROI became measurable, and AI transformed from competitive advantage to business necessity. By 2026, 94% of enterprises use AI, with 40% of workflows becoming autonomous.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">📊 Technology Adoption Speed</div>
+                    <div class="chart-subtitle">Years to reach 100 million users</div>
+                    <div class="chart-wrapper" id="adoptionSpeedChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">🎯 AI Adoption Snapshot (2026)</div>
+                    <div class="chart-subtitle">Key metrics across different categories</div>
+                    <div class="chart-wrapper" id="overviewSnapshot"></div>
+                </div>
+            </div>
+
+            <div class="insights-section">
+                <h2>🔑 Key Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-icon">🚀</div>
+                        <div class="insight-content">
+                            <h3>Fastest Tech Adoption Ever</h3>
+                            <p>GenAI reached 100M users in 2 months vs. 75 years for telephone</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">💼</div>
+                        <div class="insight-content">
+                            <h3>Universal Enterprise Adoption</h3>
+                            <p>94% of major enterprises now use AI in some capacity</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">⚡</div>
+                        <div class="insight-content">
+                            <h3>Productivity Revolution</h3>
+                            <p>Average worker saves 12.5 hours/week through AI automation</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🔄</div>
+                        <div class="insight-content">
+                            <h3>Shift to Autonomous</h3>
+                            <p>40% of workflows now run autonomously via AI agents</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ADOPTION TRENDS PAGE ==================== -->
+        <section id="adoption" class="page">
+            <div class="page-header">
+                <h1>Adoption Trends</h1>
+                <p>Historical AI adoption patterns and growth trajectories</p>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">📈 Global AI Adoption Trends (2023-2026)</div>
+                    <div class="chart-subtitle">Adoption rates by user category: Individuals, Firms, and Students</div>
+                    <div class="chart-wrapper tall" id="adoptionTimelineChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">🏢 AI Adoption by Company Size (2019-2025)</div>
+                    <div class="chart-subtitle">Tracking adoption rates across Enterprise, Mid-Market, and Small Business segments</div>
+                    <div class="chart-wrapper tall" id="companySizeChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">🚀 AI Platform Growth Trajectory (2023-2026)</div>
+                    <div class="chart-subtitle">Monthly active users across major AI platforms in millions</div>
+                    <div class="chart-wrapper tall" id="platformGrowthChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">👥 Adoption by User Category (2023-2026)</div>
+                    <div class="chart-subtitle">Individual, firm, and student adoption rates</div>
+                    <div class="chart-wrapper" id="userCategoryChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">📊 Adoption Phase Analysis</div>
+                    <div class="chart-subtitle">From early adoption to market saturation</div>
+                    <div class="chart-wrapper" id="phaseAnalysisChart"></div>
+                </div>
+            </div>
+
+            <div class="insights-section">
+                <h2>📊 Adoption Milestones</h2>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-icon">🔴</div>
+                        <div class="insight-content">
+                            <h3>2022: Inflection Point</h3>
+                            <p>Adoption hit critical mass and growth became exponential</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🟢</div>
+                        <div class="insight-content">
+                            <h3>2024: Mainstream</h3>
+                            <p>AI became standard business infrastructure, not competitive edge</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🔵</div>
+                        <div class="insight-content">
+                            <h3>2026: Saturation</h3>
+                            <p>94% enterprise adoption—focus shifts to optimization</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTORS PAGE ==================== -->
+        <section id="sectors" class="page">
+            <div class="page-header">
+                <h1>Sector Analysis</h1>
+                <p>Industry-specific AI adoption and performance</p>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">🏢 Adoption by Industry (2026)</div>
+                    <div class="chart-subtitle">Current adoption rates across major sectors</div>
+                    <div class="chart-wrapper" id="sectorAdoptionChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">💡 Usage vs. Perceived ROI</div>
+                    <div class="chart-subtitle">Comparing actual usage with business value perception</div>
+                    <div class="chart-wrapper" id="usageVsRoiChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">📈 Sector Adoption Timeline (2020-2026)</div>
+                    <div class="chart-subtitle">How different industries adopted AI over time</div>
+                    <div class="chart-wrapper tall" id="sectorTimelineChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📊 Sector Performance Summary</div>
+                <div class="chart-subtitle">Key metrics by industry</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Industry</th>
+                            <th>Adoption Rate</th>
+                            <th>Usage Frequency</th>
+                            <th>Perceived ROI</th>
+                            <th>Integration Gap</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sectorTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== GLOBAL VIEW PAGE ==================== -->
+        <section id="global" class="page">
+            <div class="page-header">
+                <h1>Global View</h1>
+                <p>Geographic distribution and regional perspectives on AI</p>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">🗺️ Global AI Adoption by Country</div>
+                    <div class="chart-subtitle">Enterprise adoption rates worldwide</div>
+                    <div class="chart-wrapper tall" id="globalMapChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">🌍 Regional Adoption Comparison</div>
+                    <div class="chart-subtitle">AI adoption by major regions/countries</div>
+                    <div class="chart-wrapper" id="regionalChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">💭 AI Optimism Index</div>
+                    <div class="chart-subtitle">"AI is more beneficial than harmful" agreement rate</div>
+                    <div class="chart-wrapper" id="optimismChart"></div>
+                </div>
+            </div>
+
+            <div class="insights-section">
+                <h2>🌏 Regional Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-icon">🌎</div>
+                        <div class="insight-content">
+                            <h3>North America: 72% Adoption</h3>
+                            <p>Leads global AI adoption with strong enterprise and startup ecosystem</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🌏</div>
+                        <div class="insight-content">
+                            <h3>Asia Pacific: 65% Adoption</h3>
+                            <p>Rapid growth driven by China, Japan, and emerging tech hubs</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🌍</div>
+                        <div class="insight-content">
+                            <h3>Europe: 58% Adoption</h3>
+                            <p>Strong regulatory focus with balanced AI governance approach</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">📈</div>
+                        <div class="insight-content">
+                            <h3>Emerging Markets: Growing Fast</h3>
+                            <p>Middle East (42%), Latin America (38%), Africa (22%) - high growth potential</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== USE CASES PAGE ==================== -->
+        <section id="usecases" class="page">
+            <div class="page-header">
+                <h1>Use Cases</h1>
+                <p>How organizations are applying AI across different functions</p>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <span class="filter-label">Select Industry</span>
+                    <select id="usecaseIndustrySelect" onchange="updateUsecaseChart()">
+                        <option value="Technology">Technology</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Retail">Retail</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">🎯 Primary AI Use Cases (2026)</div>
+                    <div class="chart-subtitle">Distribution of AI applications</div>
+                    <div class="chart-wrapper" id="usecaseDistributionChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">🔧 Use Case by Industry</div>
+                    <div class="chart-subtitle">Adoption rates for key AI applications</div>
+                    <div class="chart-wrapper" id="industryUsecaseChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">📊 AI Technology Distribution</div>
+                    <div class="chart-subtitle">Types of AI being deployed</div>
+                    <div class="chart-wrapper" id="techDistributionChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">🔄 Usage Shift: 2023 vs 2026</div>
+                    <div class="chart-subtitle">How AI application focus has evolved</div>
+                    <div class="chart-wrapper" id="usageShiftChart"></div>
+                </div>
+            </div>
+
+            <div class="insights-section">
+                <h2>💡 Use Case Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-icon">💬</div>
+                        <div class="insight-content">
+                            <h3>Customer Service Leads: 28%</h3>
+                            <p>AI-powered chatbots and support systems dominate enterprise adoption</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">📊</div>
+                        <div class="insight-content">
+                            <h3>Data Analytics: 24%</h3>
+                            <p>Business intelligence and predictive insights drive strategic decisions</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">⚙️</div>
+                        <div class="insight-content">
+                            <h3>Process Automation: 20%</h3>
+                            <p>Workflow automation delivers consistent ROI across industries</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">✏️</div>
+                        <div class="insight-content">
+                            <h3>Content Generation: 15%</h3>
+                            <p>Text, image, and code generation streamline creative workflows</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== IMPACT & ROI PAGE ==================== -->
+        <section id="impact" class="page">
+            <div class="page-header">
+                <h1>Impact & ROI</h1>
+                <p>Measuring the business value of AI investments</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-label">Avg. Productivity Gain</div>
+                    <div class="stat-value">37%</div>
+                    <span class="stat-change positive">↑ +9% YoY</span>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-label">Companies with 25%+ ROI</div>
+                    <div class="stat-value">57%</div>
+                    <span class="stat-change positive">↑ Majority seeing strong returns</span>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-icon">🚀</div>
+                    <div class="stat-label">Companies with 100%+ ROI</div>
+                    <div class="stat-value">7%</div>
+                    <span class="stat-change positive">↑ Exceptional performers</span>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-icon">💵</div>
+                    <div class="stat-label">Total AI Investment</div>
+                    <div class="stat-value">$184B</div>
+                    <span class="stat-change positive">↑ +52% Growth</span>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">📊 ROI Distribution Across Organizations</div>
+                    <div class="chart-subtitle">What returns are companies seeing from AI investments?</div>
+                    <div class="chart-wrapper" id="roiDistributionChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">⚡ Business Impact Radar</div>
+                    <div class="chart-subtitle">Impact scores across key dimensions</div>
+                    <div class="chart-wrapper" id="impactRadarChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">💰 ROI Evolution (2023-2024)</div>
+                    <div class="chart-subtitle">Return on AI investment over 8 quarters</div>
+                    <div class="chart-wrapper" id="roiEvolutionChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-container" style="margin-bottom: 2rem;">
+                <div class="chart-title">⚠️ Key Implementation Challenges</div>
+                <div class="chart-subtitle">Barriers to successful AI deployment</div>
+                <div id="challengesBars"></div>
+            </div>
+
+            <div class="insights-section">
+                <h2>📊 ROI Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-icon">📈</div>
+                        <div class="insight-content">
+                            <h3>Majority Achieving Strong ROI</h3>
+                            <p>57% of organizations report 25%+ ROI from AI investments</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🚀</div>
+                        <div class="insight-content">
+                            <h3>Top Performers Excel</h3>
+                            <p>7% of companies achieve exceptional 100%+ ROI on AI</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🎯</div>
+                        <div class="insight-content">
+                            <h3>Data Quality #1 Challenge</h3>
+                            <p>75% of organizations cite data quality as their biggest barrier</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">💰</div>
+                        <div class="insight-content">
+                            <h3>Investment Surge: $184B</h3>
+                            <p>Total AI investment grew 52% YoY, reflecting confidence in returns</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Future 2030 Projections Section -->
+            <div class="story-section" style="margin-top: 2rem;">
+                <h2>🔮 Looking Forward: 2030 Projections</h2>
+                <div class="story-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year purple">$15.7 Trillion</div>
+                        <p class="timeline-text">Projected global economic impact of AI by 2030 — representing one of the largest economic shifts in modern history.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year green">97% Job Evolution</div>
+                        <p class="timeline-text">Most jobs will change rather than disappear. Focus shifts from replacement to human-AI collaboration.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year blue">2.3 Billion Daily Users</div>
+                        <p class="timeline-text">Expected number of people using AI tools daily by 2028, up from hundreds of millions today.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year" style="color: #f59e0b;">44% Reskilling Required</div>
+                        <p class="timeline-text">Nearly half of all workers will need significant reskilling as AI transforms job requirements across industries.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">📊 Expected AI Impact by 2030</div>
+                    <div class="chart-subtitle">Projected benefits across key dimensions</div>
+                    <div class="chart-wrapper" id="futureImpactRadar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== WORKFORCE PAGE ==================== -->
+        <section id="workforce" class="page">
+            <div class="page-header">
+                <h1>Workforce Impact</h1>
+                <p>How AI is transforming jobs, skills, and workplace dynamics</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card red">
+                    <div class="stat-icon">📉</div>
+                    <div class="stat-label">Jobs Displaced (2026 Est.)</div>
+                    <div class="stat-value">85M</div>
+                    <span class="stat-change negative">Global forecast</span>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-label">Jobs Created (2026 Est.)</div>
+                    <div class="stat-value">97M</div>
+                    <span class="stat-change positive">+12M net positive</span>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-label">Weekly Time Saved</div>
+                    <div class="stat-value">12.5 hrs</div>
+                    <span class="stat-change positive">Per knowledge worker</span>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">👷 Labor Market Impact (2026 Forecast)</div>
+                    <div class="chart-subtitle">Jobs displaced vs. created by AI automation</div>
+                    <div class="chart-wrapper" id="laborMarketChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">😰 The Efficiency-Anxiety Gap</div>
+                    <div class="chart-subtitle">Productivity gain vs. job insecurity by department</div>
+                    <div class="chart-wrapper" style="display: flex; justify-content: center; align-items: center; height: 350px;">
+                        <img src="images/efficiency_anxiety_gap.png" alt="Efficiency-Anxiety Gap Chart" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">👴 AI Proficiency by Generation</div>
+                    <div class="chart-subtitle">Percentage comfortable using AI tools regularly</div>
+                    <div class="chart-wrapper" id="generationProficiencyChart"></div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">⏱️ Time Saved Per Week by Role</div>
+                    <div class="chart-subtitle">Average hours saved through AI automation</div>
+                    <div class="chart-wrapper" id="timeSavedByRoleChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-container" style="margin-bottom: 2rem;">
+                <div class="chart-title">🎯 Department-Level Analysis</div>
+                <div class="chart-subtitle">Productivity gains and anxiety levels by function</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                            <th>Productivity Gain</th>
+                            <th>Job Anxiety</th>
+                            <th>Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deptTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="insights-section">
+                <h2>👥 Workforce Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-icon">⚠️</div>
+                        <div class="insight-content">
+                            <h3>Copywriting & Support at Risk</h3>
+                            <p>High productivity gains (70-85%) correlate with highest anxiety (70-80%)</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">💻</div>
+                        <div class="insight-content">
+                            <h3>Coding: The Exception</h3>
+                            <p>90% productivity gain but only 30% anxiety—AI seen as collaborator</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">📊</div>
+                        <div class="insight-content">
+                            <h3>Net Positive Jobs</h3>
+                            <p>97M new jobs vs 85M displaced = +12M net employment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FENDRY'S PERSPECTIVE PAGE ==================== -->
+        <section id="perspective" class="page">
+            <div class="page-header">
+                <h1>Fendry's Perspective</h1>
+                <p>Strategic insights on AI transformation based on industry observations and collective analysis | Q1 2026</p>
+            </div>
+
+            <!-- Digital Transformation Timeline -->
+            <div class="story-section">
+                <h2>🌐 Digital Transformation Milestones</h2>
+                <div class="story-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year blue">The Internet Era</div>
+                        <p class="timeline-text">The Internet established the foundational infrastructure for digital transformation, creating unprecedented connectivity and information access that reshaped business operations globally.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year green">The Mobile Revolution</div>
+                        <p class="timeline-text">Smartphones and mobile computing ubiquitously expanded digital connectivity and access, enabling real-time communication and computing power in every pocket.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year purple">The Pandemic Catalyst</div>
+                        <p class="timeline-text">COVID-19 served as an unprecedented catalyst, rapidly accelerating the necessity for global digital adoption and fundamentally changing work paradigms.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year" style="color: #f59e0b;">The AI Transformation</div>
+                        <p class="timeline-text">Artificial Intelligence is currently propelling the subsequent wave of digital transformation, representing a paradigm shift in how organizations operate, innovate, and compete.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parallel Comparison -->
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">🔍 Internet Era: Search Engines</div>
+                    <div class="chart-subtitle">Late 1990s – Early 2000s</div>
+                    <div style="padding: 1rem 0;">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Information Retrieval</span>
+                            </div>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Rapid proliferation of search engines provided diverse information retrieval options, though results varied significantly across competing platforms.</p>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Accuracy Challenges</span>
+                            </div>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Obtaining accurate, reliable, and comprehensive information coverage proved challenging, requiring users to cross-reference multiple sources.</p>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Trust Barriers</span>
+                            </div>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Information exchange was impeded by widespread skepticism towards early online publishing and content authenticity.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">🤖 AI Era: Generative Applications</div>
+                    <div class="chart-subtitle">2021 – Present</div>
+                    <div style="padding: 1rem 0;">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Content Generation</span>
+                            </div>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Rapid proliferation of generative AI applications offers diverse content generation capabilities across text, code, images, and multimodal outputs.</p>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Non-Deterministic Nature</span>
+                            </div>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Achieving identical outputs for the same input is probable but not guaranteed. Ensuring factual reliability and verifiable information remains a significant challenge.</p>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Data Privacy Concerns</span>
+                            </div>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Information oversharing and data leakage on the internet are exacerbated by a lack of robust enforcement mechanisms.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Powerful AI Framework -->
+            <div class="chart-container" style="margin-bottom: 2rem;">
+                <div class="chart-title">⚡ The Pillars of Powerful AI</div>
+                <div class="chart-subtitle">A framework for responsible AI development and deployment</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; padding: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(236, 72, 153, 0.05)); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 12px; padding: 1.5rem;">
+                        <h3 style="color: #ec4899; margin-bottom: 0.75rem; font-size: 1.1rem;">🛡️ AI Safety</h3>
+                        <p style="color: var(--gray); font-size: 0.9rem; line-height: 1.6;">Ensuring AI systems operate within intended parameters, preventing unintended consequences and maintaining alignment with human values and organizational objectives.</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05)); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1.5rem;">
+                        <h3 style="color: #3b82f6; margin-bottom: 0.75rem; font-size: 1.1rem;">🔒 AI Security</h3>
+                        <p style="color: var(--gray); font-size: 0.9rem; line-height: 1.6;">Protecting AI systems from adversarial attacks, data breaches, and malicious exploitation while ensuring robust access controls and threat mitigation strategies.</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.05)); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 12px; padding: 1.5rem;">
+                        <h3 style="color: #06b6d4; margin-bottom: 0.75rem; font-size: 1.1rem;">📊 AI Data Quality</h3>
+                        <p style="color: var(--gray); font-size: 0.9rem; line-height: 1.6;">Maintaining high-quality, representative, and unbiased training data to ensure reliable outputs and minimize systematic errors in AI-generated content.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: var(--dark); border-radius: 12px; margin-top: 1rem;">
+                    <p style="color: var(--light); font-size: 1rem; margin-bottom: 0.5rem;"><strong>The Intersection: Powerful AI</strong></p>
+                    <p style="color: var(--gray); font-size: 0.9rem;">When Safety, Security, and Data Quality converge, organizations achieve AI systems that are simultaneously safe & secure, deliver reliable operations, and provide consistent performance.</p>
+                </div>
+            </div>
+
+            <!-- Navigating Dilemmas -->
+            <div class="chart-container" style="margin-bottom: 2rem;">
+                <div class="chart-title">⚖️ Navigating AI Dilemmas</div>
+                <div class="chart-subtitle">Critical questions for responsible AI governance</div>
+                <div style="padding: 1rem 0;">
+                    <div style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 1.25rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0;">
+                        <h4 style="color: #ef4444; margin-bottom: 0.5rem;">Content Safeguards</h4>
+                        <p style="color: var(--light); font-size: 0.95rem; line-height: 1.6;">AI systems require robust safeguards to prevent the generation of content that promotes or facilitates harmful activities. How do we balance capability with responsibility?</p>
+                    </div>
+                    <div style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b; padding: 1.25rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0;">
+                        <h4 style="color: #f59e0b; margin-bottom: 0.5rem;">Dual-Use Information</h4>
+                        <p style="color: var(--light); font-size: 0.95rem; line-height: 1.6;">How should AI models be configured to address inquiries that are not inherently harmful but involve sensitive or dual-use information? Defensive research often requires access to offensive knowledge.</p>
+                    </div>
+                    <div style="background: rgba(139, 92, 246, 0.1); border-left: 4px solid #8b5cf6; padding: 1.25rem; border-radius: 0 8px 8px 0;">
+                        <h4 style="color: #8b5cf6; margin-bottom: 0.5rem;">Intellectual Property Rights</h4>
+                        <p style="color: var(--light); font-size: 0.95rem; line-height: 1.6;">What mechanisms are necessary to ensure AI platforms respect and protect intellectual property rights, including ownership and copyright, during content generation and information retrieval?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Governance Framework Proposal -->
+            <div class="insights-section">
+                <h2>📋 Proposed: Integrated AI Governance Framework</h2>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-icon">🏛️</div>
+                        <div class="insight-content">
+                            <h3>Constitutional AI Enhancement</h3>
+                            <p>A dedicated governance enforcement layer overlying Constitutional AI (CAI) to ensure systematic safeguards against sensitive, dual-use inquiries.</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🎯</div>
+                        <div class="insight-content">
+                            <h3>Strategic Principle Responses</h3>
+                            <p>AI responses limited to high-level strategic principles, strictly preventing disclosure of classified information or specific vulnerabilities.</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">🔐</div>
+                        <div class="insight-content">
+                            <h3>Information Boundary Controls</h3>
+                            <p>Robust mechanisms to prevent disclosure regardless of whether such information exists elsewhere, maintaining consistent safety standards.</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">📈</div>
+                        <div class="insight-content">
+                            <h3>Continuous Evaluation</h3>
+                            <p>Ongoing assessment through observations, case studies, and focus groups to refine governance approaches as AI capabilities evolve.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Author Note -->
+            <div class="chart-container" style="text-align: center; background: linear-gradient(135deg, var(--dark-secondary), var(--dark));">
+                <p style="color: var(--gray); font-size: 0.9rem; font-style: italic;">"These perspectives represent individual and collective insights gathered through industry observation, technical analysis, and stakeholder engagement. They are intended to contribute to the broader discourse on responsible AI development."</p>
+                <p style="color: var(--light); font-size: 0.85rem; margin-top: 1rem;">— Fendry Utama | Q1 2026</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>AI Revolution 2026 Dashboard | Data aggregated from multiple industry reports and surveys</p>
+        <p>Built with Plotly.js and Chart.js | Interactive multi-source data visualization</p>
+    </div>
+
+    <script>
+        // ==================== PAGE NAVIGATION ====================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('nav a').forEach(a => {
+                a.classList.remove('active');
+                if (a.dataset.page === pageId) a.classList.add('active');
+            });
+            window.scrollTo(0, 0);
+        }
+
+        // ==================== COLOR SCHEMES ====================
+        const colors = {
+            primary: '#3b82f6',
+            secondary: '#8b5cf6',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444',
+            cyan: '#06b6d4',
+            pink: '#ec4899',
+            gray: '#64748b',
+            palette: ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899']
+        };
+
+        const plotlyLayout = {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#f8fafc', family: 'Inter, sans-serif' },
+            margin: { t: 40, r: 20, b: 60, l: 60 },
+            xaxis: { gridcolor: '#334155', zerolinecolor: '#334155' },
+            yaxis: { gridcolor: '#334155', zerolinecolor: '#334155' }
+        };
+
+        // ==================== OVERVIEW PAGE CHARTS ====================
+        function renderOverviewPage() {
+            // Adoption Speed Chart
+            Plotly.newPlot('adoptionSpeedChart', [{
+                x: ['Telephone', 'Internet', 'Mobile', 'Instagram', 'GenAI'],
+                y: [75, 7, 16, 2.5, 0.2],
+                type: 'bar',
+                marker: {
+                    color: ['#334155', '#334155', '#334155', '#334155', '#3b82f6'],
+                    line: { width: 0 }
+                },
+                text: ['75 yrs', '7 yrs', '16 yrs', '2.5 yrs', '2 months'],
+                textposition: 'outside',
+                textfont: { color: '#f8fafc' }
+            }], {
+                ...plotlyLayout,
+                title: { text: '', font: { size: 14 } },
+                yaxis: { ...plotlyLayout.yaxis, title: 'Years to 100M Users' },
+                showlegend: false
+            }, { responsive: true });
+
+            // Overview Snapshot
+            Plotly.newPlot('overviewSnapshot', [{
+                x: ['GenAI Regular\nUsage', 'AI in Business\nFunctions', 'Tech Sector', 'Finance', 'Healthcare'],
+                y: [65, 40, 72, 67, 61],
+                type: 'bar',
+                marker: { color: colors.palette }
+            }], {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Adoption %', range: [0, 100] }
+            }, { responsive: true });
+        }
+
+        // ==================== ADOPTION PAGE CHARTS ====================
+        function renderAdoptionPage() {
+            // Main Timeline Chart - matches Global AI Adoption Trends PNG
+            const years = [2023, 2024, 2025, 2026];
+
+            Plotly.newPlot('adoptionTimelineChart', [
+                {
+                    x: years,
+                    y: [15, 25, 30, 35],
+                    name: 'Individuals',
+                    mode: 'lines+markers',
+                    line: { color: colors.primary, width: 3 },
+                    marker: { size: 10 }
+                },
+                {
+                    x: years,
+                    y: [8, 12, 20, 25],
+                    name: 'Firms',
+                    mode: 'lines+markers',
+                    line: { color: colors.warning, width: 3 },
+                    marker: { size: 10 }
+                },
+                {
+                    x: years,
+                    y: [40, 55, 68, 75],
+                    name: 'Students (16+)',
+                    mode: 'lines+markers',
+                    line: { color: colors.success, width: 3, dash: 'dot' },
+                    marker: { size: 10 }
+                }
+            ], {
+                ...plotlyLayout,
+                title: { text: 'GLOBAL AI ADOPTION TRENDS', font: { size: 18, color: '#f8fafc' } },
+                yaxis: { ...plotlyLayout.yaxis, title: 'Adoption Rate (%)', range: [0, 80] },
+                xaxis: { ...plotlyLayout.xaxis, title: 'Year' },
+                legend: { orientation: 'h', y: -0.15 }
+            }, { responsive: true });
+
+            // User Category Chart
+            Plotly.newPlot('userCategoryChart', [
+                { x: [2023, 2024, 2025, 2026], y: [15, 20, 30, 35], name: 'Individuals', mode: 'lines+markers', line: { color: colors.primary } },
+                { x: [2023, 2024, 2025, 2026], y: [8, 12, 20, 25], name: 'Firms', mode: 'lines+markers', line: { color: colors.warning } },
+                { x: [2023, 2024, 2025, 2026], y: [40, 55, 68, 75], name: 'Students (16+)', mode: 'lines+markers', line: { color: colors.success } }
+            ], {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Adoption Rate (%)', range: [0, 100] },
+                legend: { orientation: 'h', y: -0.2 }
+            }, { responsive: true });
+
+            // Phase Analysis
+            Plotly.newPlot('phaseAnalysisChart', [{
+                values: [15, 25, 35, 25],
+                labels: ['Early Adopters', 'Early Majority', 'Late Majority', 'Laggards'],
+                type: 'pie',
+                marker: { colors: [colors.primary, colors.success, colors.warning, colors.gray] },
+                textinfo: 'label+percent',
+                textfont: { color: '#fff' },
+                hole: 0.4
+            }], {
+                ...plotlyLayout,
+                showlegend: false
+            }, { responsive: true });
+
+            // Company Size Adoption Chart (2019-2025)
+            const companyYears = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+            Plotly.newPlot('companySizeChart', [
+                {
+                    x: companyYears,
+                    y: [23, 32, 47, 56, 72, 78, 85],
+                    name: 'Enterprise (1000+ employees)',
+                    mode: 'lines+markers',
+                    line: { color: colors.primary, width: 3 },
+                    marker: { size: 10 },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(59, 130, 246, 0.1)'
+                },
+                {
+                    x: companyYears,
+                    y: [15, 22, 35, 42, 58, 65, 72],
+                    name: 'Mid-Market (100-999 employees)',
+                    mode: 'lines+markers',
+                    line: { color: colors.success, width: 3 },
+                    marker: { size: 10 }
+                },
+                {
+                    x: companyYears,
+                    y: [8, 12, 19, 25, 38, 45, 52],
+                    name: 'Small Business (<100 employees)',
+                    mode: 'lines+markers',
+                    line: { color: colors.warning, width: 3 },
+                    marker: { size: 10 }
+                }
+            ], {
+                ...plotlyLayout,
+                title: { text: 'AI ADOPTION BY COMPANY SIZE', font: { size: 18, color: '#f8fafc' } },
+                yaxis: { ...plotlyLayout.yaxis, title: 'Adoption Rate (%)', range: [0, 100] },
+                xaxis: { ...plotlyLayout.xaxis, title: 'Year' },
+                legend: { orientation: 'h', y: -0.15 }
+            }, { responsive: true });
+
+            // AI Platform Growth Chart (2023-2026)
+            const platformMonths = ['Jan 23', 'Apr 23', 'Jul 23', 'Oct 23', 'Jan 24', 'Apr 24', 'Jul 24', 'Oct 24', 'Jan 25', 'Apr 25', 'Jul 25', 'Oct 25', 'Jan 26'];
+            Plotly.newPlot('platformGrowthChart', [
+                {
+                    x: platformMonths,
+                    y: [100, 120, 140, 155, 165, 172, 178, 183, 187, 192, 197, 203, 210],
+                    name: 'ChatGPT',
+                    mode: 'lines+markers',
+                    line: { color: '#FF6B35', width: 3 },
+                    marker: { size: 8 },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(255, 107, 53, 0.1)'
+                },
+                {
+                    x: platformMonths,
+                    y: [0, 0, 15, 35, 55, 75, 95, 110, 125, 140, 155, 170, 185],
+                    name: 'Microsoft Copilot',
+                    mode: 'lines+markers',
+                    line: { color: colors.primary, width: 3 },
+                    marker: { size: 8 },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(59, 130, 246, 0.1)'
+                },
+                {
+                    x: platformMonths,
+                    y: [0, 5, 12, 22, 35, 52, 68, 82, 95, 108, 122, 138, 155],
+                    name: 'Claude',
+                    mode: 'lines+markers',
+                    line: { color: colors.success, width: 3 },
+                    marker: { size: 8 },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(16, 185, 129, 0.1)'
+                }
+            ], {
+                ...plotlyLayout,
+                title: { text: 'AI PLATFORM MONTHLY ACTIVE USERS', font: { size: 18, color: '#f8fafc' } },
+                yaxis: { ...plotlyLayout.yaxis, title: 'Monthly Active Users (Millions)', range: [0, 230] },
+                xaxis: { ...plotlyLayout.xaxis, title: '' },
+                legend: { orientation: 'h', y: -0.15 },
+                annotations: [{
+                    x: 'Jan 26', y: 210,
+                    text: '210M',
+                    showarrow: false,
+                    font: { size: 11, color: '#FF6B35' },
+                    yshift: 15
+                }]
+            }, { responsive: true });
+        }
+
+        // ==================== SECTORS PAGE CHARTS ====================
+        function renderSectorsPage() {
+            const sectors = ['Tech & Software', 'Financial Services', 'Healthcare', 'Retail & E-commerce', 'Manufacturing', 'Media & Entertainment', 'Education', 'Government'];
+            const adoption2026 = [89, 78, 65, 62, 58, 54, 48, 35];
+            const usage = [92, 75, 62, 58, 52, 48, 42, 30];
+            const roi = [88, 72, 58, 55, 48, 45, 38, 28];
+
+            // Sector Adoption
+            Plotly.newPlot('sectorAdoptionChart', [{
+                y: sectors,
+                x: adoption2026,
+                type: 'bar',
+                orientation: 'h',
+                marker: { color: colors.palette },
+                text: adoption2026.map(v => v + '%'),
+                textposition: 'outside'
+            }], {
+                ...plotlyLayout,
+                xaxis: { ...plotlyLayout.xaxis, title: 'Adoption Rate (%)', range: [0, 110] },
+                yaxis: { ...plotlyLayout.yaxis, automargin: true }
+            }, { responsive: true });
+
+            // Usage vs ROI
+            Plotly.newPlot('usageVsRoiChart', [
+                { x: sectors, y: usage, name: 'Usage Rate', type: 'bar', marker: { color: colors.primary } },
+                { x: sectors, y: roi, name: 'Perceived ROI', type: 'bar', marker: { color: colors.danger } }
+            ], {
+                ...plotlyLayout,
+                barmode: 'group',
+                yaxis: { ...plotlyLayout.yaxis, title: 'Percentage (%)' },
+                legend: { orientation: 'h', y: -0.2 }
+            }, { responsive: true });
+
+            // Sector Timeline
+            Plotly.newPlot('sectorTimelineChart', [
+                { x: [2019, 2020, 2021, 2022, 2023, 2024, 2025], y: [35, 48, 62, 74, 82, 86, 89], name: 'Tech & Software', line: { color: colors.primary, width: 3 } },
+                { x: [2019, 2020, 2021, 2022, 2023, 2024, 2025], y: [28, 38, 52, 62, 70, 75, 78], name: 'Financial Services', line: { color: colors.success, width: 3 } },
+                { x: [2019, 2020, 2021, 2022, 2023, 2024, 2025], y: [18, 28, 38, 48, 56, 62, 65], name: 'Healthcare', line: { color: colors.secondary, width: 3 } },
+                { x: [2019, 2020, 2021, 2022, 2023, 2024, 2025], y: [15, 25, 35, 45, 54, 59, 62], name: 'Retail & E-commerce', line: { color: colors.warning, width: 3 } },
+                { x: [2019, 2020, 2021, 2022, 2023, 2024, 2025], y: [12, 22, 32, 42, 50, 55, 58], name: 'Manufacturing', line: { color: colors.danger, width: 3 } },
+                { x: [2019, 2020, 2021, 2022, 2023, 2024, 2025], y: [10, 18, 28, 38, 46, 51, 54], name: 'Media & Entertainment', line: { color: colors.cyan, width: 3 } },
+                { x: [2019, 2020, 2021, 2022, 2023, 2024, 2025], y: [8, 15, 24, 32, 40, 45, 48], name: 'Education', line: { color: colors.pink, width: 3 } },
+                { x: [2019, 2020, 2021, 2022, 2023, 2024, 2025], y: [5, 10, 16, 22, 28, 32, 35], name: 'Government', line: { color: colors.gray, width: 3 } }
+            ].map(t => ({ ...t, mode: 'lines+markers' })), {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Adoption (%)', range: [0, 100] },
+                xaxis: { ...plotlyLayout.xaxis, title: 'Year' },
+                legend: { orientation: 'h', y: -0.2, x: 0.5, xanchor: 'center' }
+            }, { responsive: true });
+
+            // Sector Table
+            const tableData = [
+                { sector: 'Tech & Software', adoption: '89%', usage: '92%', roi: '88%', gap: 'Low' },
+                { sector: 'Financial Services', adoption: '78%', usage: '75%', roi: '72%', gap: 'Low' },
+                { sector: 'Healthcare', adoption: '65%', usage: '62%', roi: '58%', gap: 'Low' },
+                { sector: 'Retail & E-commerce', adoption: '62%', usage: '58%', roi: '55%', gap: 'Medium' },
+                { sector: 'Manufacturing', adoption: '58%', usage: '52%', roi: '48%', gap: 'Medium' },
+                { sector: 'Media & Entertainment', adoption: '54%', usage: '48%', roi: '45%', gap: 'Medium' },
+                { sector: 'Education', adoption: '48%', usage: '42%', roi: '38%', gap: 'High' },
+                { sector: 'Government', adoption: '35%', usage: '30%', roi: '28%', gap: 'High' }
+            ];
+            const tbody = document.getElementById('sectorTableBody');
+            tbody.innerHTML = tableData.map(row => `
+                <tr>
+                    <td><strong>${row.sector}</strong></td>
+                    <td>${row.adoption}</td>
+                    <td>${row.usage}</td>
+                    <td>${row.roi}</td>
+                    <td style="color: ${row.gap === 'Low' ? colors.success : row.gap === 'Medium' ? colors.warning : colors.danger}">${row.gap}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ==================== GLOBAL PAGE CHARTS ====================
+        function renderGlobalPage() {
+            // Regional data
+            const regions = ['North America', 'Asia Pacific', 'Europe', 'Middle East', 'Latin America', 'Africa'];
+            const regionalAdoption = [72, 65, 58, 42, 38, 22];
+
+            // Country-level data
+            const countries = ['United States', 'China', 'Japan', 'Germany', 'United Kingdom', 'Canada', 'Australia', 'India', 'Brazil', 'France'];
+            const adoption = [75, 72, 68, 64, 66, 70, 62, 58, 45, 60];
+
+            // World Map
+            Plotly.newPlot('globalMapChart', [{
+                type: 'choropleth',
+                locationmode: 'country names',
+                locations: countries,
+                z: adoption,
+                colorscale: [[0, '#1e3a5f'], [0.5, '#3b82f6'], [1, '#93c5fd']],
+                colorbar: { title: 'Adoption %', ticksuffix: '%' },
+                marker: { line: { color: '#1e293b', width: 1 } }
+            }], {
+                ...plotlyLayout,
+                geo: {
+                    showframe: false,
+                    showcoastlines: true,
+                    coastlinecolor: '#334155',
+                    projection: { type: 'natural earth' },
+                    bgcolor: 'rgba(0,0,0,0)',
+                    landcolor: '#1e293b',
+                    showland: true,
+                    showcountries: true,
+                    countrycolor: '#334155'
+                }
+            }, { responsive: true });
+
+            // Regional Chart
+            Plotly.newPlot('regionalChart', [{
+                y: regions,
+                x: regionalAdoption,
+                type: 'bar',
+                orientation: 'h',
+                marker: { color: [colors.primary, colors.secondary, colors.success, colors.cyan, colors.pink, colors.warning] },
+                text: regionalAdoption.map(v => v + '%'),
+                textposition: 'outside'
+            }], {
+                ...plotlyLayout,
+                xaxis: { ...plotlyLayout.xaxis, title: 'Adoption Rate (%)', range: [0, 85] },
+                yaxis: { ...plotlyLayout.yaxis, automargin: true }
+            }, { responsive: true });
+
+            // Optimism Chart
+            Plotly.newPlot('optimismChart', [{
+                x: ['USA', 'China', 'Global Average'],
+                y: [39, 83, 54],
+                type: 'bar',
+                marker: { color: [colors.danger, colors.success, colors.warning] },
+                text: ['39%', '83%', '54%'],
+                textposition: 'outside'
+            }], {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Agreement (%)', range: [0, 100] }
+            }, { responsive: true });
+        }
+
+        // ==================== USE CASES PAGE CHARTS ====================
+        const usecaseData = {
+            Technology: { Automation: 85, Analytics: 78, 'Generative AI': 72, 'Customer Service': 68 },
+            Finance: { Automation: 80, Analytics: 74, 'Generative AI': 67, 'Risk Analysis': 72 },
+            Healthcare: { Automation: 70, Analytics: 65, 'Generative AI': 61, 'Diagnostics': 58 },
+            Retail: { Automation: 65, Analytics: 60, 'Generative AI': 55, 'Personalization': 70 }
+        };
+
+        function renderUseCasesPage() {
+            // Distribution Chart - Updated with detailed individual use cases
+            Plotly.newPlot('usecaseDistributionChart', [{
+                labels: ['Writing & Content', 'Coding & Development', 'Research & Analysis', 'Customer Service', 'Data Analysis', 'Creative Work'],
+                values: [28, 22, 18, 14, 11, 7],
+                type: 'pie',
+                marker: { colors: ['#FF6B35', colors.primary, colors.success, colors.secondary, colors.warning, colors.pink] },
+                textinfo: 'label+percent',
+                textfont: { color: '#fff' },
+                hole: 0.35
+            }], {
+                ...plotlyLayout
+            }, { responsive: true });
+
+            // Tech Distribution
+            Plotly.newPlot('techDistributionChart', [{
+                labels: ['Workflow Automation', 'Predictive Analytics', 'Generative AI', 'Robotics/RPA'],
+                values: [35, 30, 25, 10],
+                type: 'pie',
+                marker: { colors: [colors.primary, colors.success, colors.secondary, colors.warning] },
+                textinfo: 'label+percent',
+                textfont: { color: '#fff' }
+            }], {
+                ...plotlyLayout
+            }, { responsive: true });
+
+            // Usage Shift Radar
+            Plotly.newPlot('usageShiftChart', [
+                {
+                    type: 'scatterpolar',
+                    r: [40, 25, 20, 5, 10],
+                    theta: ['Content Creation', 'Coding', 'Research', 'Autonomous Agents', 'Data Analysis'],
+                    fill: 'toself',
+                    name: '2023',
+                    line: { color: colors.gray }
+                },
+                {
+                    type: 'scatterpolar',
+                    r: [15, 10, 20, 35, 20],
+                    theta: ['Content Creation', 'Coding', 'Research', 'Autonomous Agents', 'Data Analysis'],
+                    fill: 'toself',
+                    name: '2026',
+                    line: { color: colors.secondary }
+                }
+            ], {
+                ...plotlyLayout,
+                polar: {
+                    bgcolor: 'rgba(0,0,0,0)',
+                    radialaxis: { visible: true, range: [0, 50], gridcolor: '#334155' },
+                    angularaxis: { gridcolor: '#334155' }
+                },
+                legend: { orientation: 'h', y: -0.1 }
+            }, { responsive: true });
+
+            updateUsecaseChart();
+        }
+
+        function updateUsecaseChart() {
+            const industry = document.getElementById('usecaseIndustrySelect').value;
+            const data = usecaseData[industry];
+
+            Plotly.newPlot('industryUsecaseChart', [{
+                x: Object.keys(data),
+                y: Object.values(data),
+                type: 'bar',
+                marker: { color: colors.palette }
+            }], {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Adoption (%)', range: [0, 100] },
+                title: { text: `${industry} AI Use Cases`, font: { size: 14, color: '#f8fafc' } }
+            }, { responsive: true });
+        }
+
+        // ==================== IMPACT PAGE CHARTS ====================
+        function renderImpactPage() {
+            // ROI Distribution Chart
+            Plotly.newPlot('roiDistributionChart', [{
+                x: ['<10%', '10-25%', '25-50%', '50-100%', '>100%'],
+                y: [15, 28, 32, 18, 7],
+                type: 'bar',
+                marker: {
+                    color: [colors.danger, colors.warning, colors.primary, colors.success, colors.cyan],
+                    line: { width: 0 }
+                },
+                text: ['15%', '28%', '32%', '18%', '7%'],
+                textposition: 'outside',
+                textfont: { color: '#f8fafc', size: 14 }
+            }], {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Percentage of Organizations', range: [0, 40] },
+                xaxis: { ...plotlyLayout.xaxis, title: 'ROI Range' },
+                annotations: [{
+                    x: 2, y: 38,
+                    text: '57% achieve 25%+ ROI',
+                    showarrow: false,
+                    font: { size: 12, color: colors.success }
+                }]
+            }, { responsive: true });
+
+            // ROI Evolution
+            Plotly.newPlot('roiEvolutionChart', [
+                {
+                    x: ['Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'],
+                    y: [15, 22, 31, 42, 55, 68, 79, 89],
+                    name: 'ROI %',
+                    fill: 'tozeroy',
+                    line: { color: colors.success, width: 3 },
+                    fillcolor: 'rgba(16, 185, 129, 0.2)'
+                },
+                {
+                    x: ['Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'],
+                    y: [45, 52, 58, 65, 71, 78, 84, 88],
+                    name: 'Investment Level',
+                    line: { color: colors.secondary, width: 3 }
+                }
+            ], {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Percentage (%)', range: [0, 100] },
+                legend: { orientation: 'h', y: -0.15 }
+            }, { responsive: true });
+
+            // Impact Radar
+            Plotly.newPlot('impactRadarChart', [{
+                type: 'scatterpolar',
+                r: [85, 72, 88, 78, 65, 81],
+                theta: ['Productivity', 'Cost Savings', 'Innovation', 'Customer Satisfaction', 'Revenue Growth', 'Employee Efficiency'],
+                fill: 'toself',
+                line: { color: colors.primary, width: 2 },
+                fillcolor: 'rgba(59, 130, 246, 0.3)'
+            }], {
+                ...plotlyLayout,
+                polar: {
+                    bgcolor: 'rgba(0,0,0,0)',
+                    radialaxis: { visible: true, range: [0, 100], gridcolor: '#334155' },
+                    angularaxis: { gridcolor: '#334155' }
+                }
+            }, { responsive: true });
+
+            // Challenges Bars
+            const challenges = [
+                { name: 'Data Quality', value: 75, color: colors.danger },
+                { name: 'Security Concerns', value: 71, color: colors.warning },
+                { name: 'Skills Gap', value: 68, color: colors.secondary },
+                { name: 'Integration Complexity', value: 62, color: colors.primary },
+                { name: 'Cost', value: 58, color: colors.success },
+                { name: 'Change Management', value: 55, color: colors.cyan }
+            ];
+
+            const container = document.getElementById('challengesBars');
+            container.innerHTML = challenges.map(c => `
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-name">${c.name}</span>
+                        <span class="progress-value">${c.value}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${c.value}%; background: linear-gradient(90deg, ${c.color}, ${c.color}88);"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Future 2030 Impact Radar
+            Plotly.newPlot('futureImpactRadar', [{
+                type: 'scatterpolar',
+                r: [85, 72, 88, 92, 78, 95],
+                theta: ['Productivity Gains', 'New Job Creation', 'Economic Growth', 'Innovation Speed', 'Accessibility', 'Global Reach'],
+                fill: 'toself',
+                name: 'Projected Impact (2030)',
+                line: { color: '#FF6B35', width: 3 },
+                fillcolor: 'rgba(255, 107, 53, 0.2)',
+                marker: { size: 8, color: '#FF6B35' }
+            }], {
+                ...plotlyLayout,
+                polar: {
+                    bgcolor: 'rgba(0,0,0,0)',
+                    radialaxis: { visible: true, range: [0, 100], gridcolor: '#334155', tickfont: { color: '#64748b' } },
+                    angularaxis: { gridcolor: '#334155', tickfont: { color: '#f8fafc' } }
+                },
+                showlegend: true,
+                legend: { x: 0.5, y: -0.1, xanchor: 'center', orientation: 'h' }
+            }, { responsive: true });
+        }
+
+        // ==================== WORKFORCE PAGE CHARTS ====================
+        function renderWorkforcePage() {
+            // Labor Market Chart
+            Plotly.newPlot('laborMarketChart', [{
+                x: ['Jobs Displaced', 'Jobs Created'],
+                y: [85, 97],
+                type: 'bar',
+                marker: { color: [colors.danger, colors.success] },
+                text: ['85M', '97M'],
+                textposition: 'outside',
+                textfont: { size: 16, color: '#f8fafc' }
+            }], {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Millions of Jobs', range: [0, 120] },
+                annotations: [{
+                    x: 1.5, y: 110,
+                    text: 'Net: +12M Jobs',
+                    showarrow: false,
+                    font: { size: 14, color: colors.success }
+                }]
+            }, { responsive: true });
+
+            // Anxiety Gap Scatter - now using static image (efficiency_anxiety_gap.png)
+
+            // AI Proficiency by Generation Chart
+            Plotly.newPlot('generationProficiencyChart', [{
+                y: ['Gen Z (18-27)', 'Millennials (28-43)', 'Gen X (44-59)', 'Baby Boomers (60+)'],
+                x: [87, 76, 58, 34],
+                type: 'bar',
+                orientation: 'h',
+                marker: {
+                    color: [colors.success, colors.primary, colors.warning, colors.danger],
+                    line: { width: 0 }
+                },
+                text: ['87%', '76%', '58%', '34%'],
+                textposition: 'outside',
+                textfont: { color: '#f8fafc' }
+            }], {
+                ...plotlyLayout,
+                xaxis: { ...plotlyLayout.xaxis, title: 'Proficiency Rate (%)', range: [0, 100] },
+                yaxis: { ...plotlyLayout.yaxis, automargin: true }
+            }, { responsive: true });
+
+            // Time Saved by Role Chart
+            Plotly.newPlot('timeSavedByRoleChart', [{
+                x: ['Customer Support', 'Software Developers', 'Data Analysts', 'Content Writers', 'Marketers', 'Designers'],
+                y: [15, 12, 11, 10, 9, 8],
+                type: 'bar',
+                marker: {
+                    color: ['#FF6B35', colors.primary, colors.secondary, colors.success, colors.warning, colors.cyan],
+                    line: { width: 0 }
+                },
+                text: ['15 hrs', '12 hrs', '11 hrs', '10 hrs', '9 hrs', '8 hrs'],
+                textposition: 'outside',
+                textfont: { color: '#f8fafc' }
+            }], {
+                ...plotlyLayout,
+                yaxis: { ...plotlyLayout.yaxis, title: 'Hours Saved Per Week', range: [0, 18] },
+                xaxis: { ...plotlyLayout.xaxis, tickangle: -30 }
+            }, { responsive: true });
+
+            // Department Table
+            const deptData = [
+                { dept: 'Coding', productivity: 90, anxiety: 30, risk: 'Low' },
+                { dept: 'Copywriting', productivity: 85, anxiety: 70, risk: 'High' },
+                { dept: 'Customer Support', productivity: 70, anxiety: 80, risk: 'High' },
+                { dept: 'Design', productivity: 75, anxiety: 65, risk: 'Medium' },
+                { dept: 'Legal Research', productivity: 60, anxiety: 45, risk: 'Medium' },
+                { dept: 'Logistics', productivity: 50, anxiety: 15, risk: 'Low' },
+                { dept: 'HR', productivity: 40, anxiety: 20, risk: 'Low' }
+            ];
+            const tbody = document.getElementById('deptTableBody');
+            tbody.innerHTML = deptData.map(row => `
+                <tr>
+                    <td><strong>${row.dept}</strong></td>
+                    <td>${row.productivity}%</td>
+                    <td>${row.anxiety}%</td>
+                    <td style="color: ${row.risk === 'Low' ? colors.success : row.risk === 'Medium' ? colors.warning : colors.danger}; font-weight: 600;">
+                        ${row.risk}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ==================== INITIALIZE ALL CHARTS ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderOverviewPage();
+            renderAdoptionPage();
+            renderSectorsPage();
+            renderGlobalPage();
+            renderUseCasesPage();
+            renderImpactPage();
+            renderWorkforcePage();
+        });
+    </script>
+</body>
+</html>

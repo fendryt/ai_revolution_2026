@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Adoption & Impact Dashboard</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f7fb;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+    h2 {
+      margin-top: 30px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .description {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #555;
+    }
+    #controls {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    label {
+      font-size: 0.9rem;
+      color: #444;
+    }
+    select {
+      padding: 4px 8px;
+      font-size: 0.9rem;
+    }
+    #chart {
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    #insights {
+      margin-top: 25px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    #insights ul {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Adoption & Impact Dashboard</h1>
+    <p class="description">
+      Explore how organizations and industries are adopting AI. Use the controls to focus on specific groups.
+    </p>
+
+    <div id="controls">
+      <div>
+        <label for="groupFilter"><strong>View:</strong></label>
+        <select id="groupFilter">
+          <option value="all">All metrics</option>
+          <option value="org">Organization-level metrics</option>
+          <option value="industry">Industry-level metrics</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="chart"></div>
+
+    <div id="insights">
+      <h2>Key Insights</h2>
+      <ul id="insightsList">
+        <li><strong>Tech leads</strong> with high AI adoption, reflecting AI’s role in core product development.</li>
+        <li><strong>Financial services</strong> show strong adoption driven by automation, risk modeling, and fraud detection.</li>
+        <li><strong>Healthcare</strong> adoption is accelerating due to diagnostics, imaging, and workflow automation.</li>
+        <li><strong>Generative AI</strong> usage is widespread, with many organizations using it regularly in daily work.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // --- Data ---
+    const data = [
+      {
+        metric: "GenAI Regular Usage (McKinsey 2024)",
+        value: 65,
+        group: "org"
+      },
+      {
+        metric: "AI in ≥1 Business Function",
+        value: 40,
+        group: "org"
+      },
+      {
+        metric: "Tech Sector AI Adoption",
+        value: 72,
+        group: "industry"
+      },
+      {
+        metric: "Financial Services Adoption",
+        value: 67,
+        group: "industry"
+      },
+      {
+        metric: "Healthcare Adoption",
+        value: 61,
+        group: "industry"
+      }
+    ];
+
+    const groupFilter = document.getElementById("groupFilter");
+    const insightsList = document.getElementById("insightsList");
+
+    function getFilteredData(group) {
+      if (group === "all") return data;
+      return data.filter(d => d.group === group);
+    }
+
+    function updateInsights(group) {
+      let html = "";
+      if (group === "org" || group === "all") {
+        html += "<li><strong>Generative AI</strong> is becoming mainstream, with many organizations using it regularly.</li>";
+        html += "<li><strong>AI in at least one function</strong> shows that adoption is no longer experimental.</li>";
+      }
+      if (group === "industry" || group === "all") {
+        html += "<li><strong>Tech</strong> leads in AI adoption, embedding AI into products and infrastructure.</li>";
+        html += "<li><strong>Financial services</strong> leverage AI for risk, fraud detection, and customer service.</li>";
+        html += "<li><strong>Healthcare</strong> is rapidly adopting AI for diagnostics and operational efficiency.</li>";
+      }
+      insightsList.innerHTML = html;
+    }
+
+    function renderChart(group) {
+      const filtered = getFilteredData(group);
+
+      const trace = {
+        x: filtered.map(d => d.metric),
+        y: filtered.map(d => d.value),
+        type: "bar",
+        marker: {
+          color: filtered.map(d => d.group === "org" ? "#4c78a8" : "#72b7b2")
+        },
+        hovertemplate: "<b>%{x}</b><br>Adoption: %{y}%<extra></extra>"
+      };
+
+      const layout = {
+        title: "AI Adoption Across Metrics",
+        xaxis: {
+          title: "",
+          tickangle: -30
+        },
+        yaxis: {
+          title: "Adoption (%)",
+          range: [0, 100]
+        },
+        margin: { t: 60, l: 60, r: 20, b: 120 },
+        showlegend: false
+      };
+
+      Plotly.newPlot("chart", [trace], layout, {responsive: true});
+    }
+
+    // Initial render
+    renderChart("all");
+    updateInsights("all");
+
+    // Event listeners
+    groupFilter.addEventListener("change", () => {
+      const group = groupFilter.value;
+      renderChart(group);
+      updateInsights(group);
+    });
+  </script>
+</body>
+</html>

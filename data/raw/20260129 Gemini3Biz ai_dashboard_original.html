@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Maturity Dashboard (2020-2025)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 20px;
+        }
+        
+        h1 { margin: 0; font-size: 2rem; color: #0f172a; }
+        .subtitle { color: var(--text-light); margin-top: 5px; }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary);
+        }
+
+        .kpi-title { font-size: 0.9rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-value { font-size: 2rem; font-weight: 700; margin: 10px 0; }
+        .kpi-delta { font-size: 0.9rem; color: #10b981; font-weight: 600; }
+
+        /* Main Dashboard Area */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        /* Sidebar Controls */
+        .controls {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            height: fit-content;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border: none;
+            background: transparent;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover { background-color: #f1f5f9; color: var(--primary); }
+        .nav-btn.active { background-color: #eff6ff; color: var(--primary); font-weight: 600; border-left: 3px solid var(--primary); }
+
+        /* Chart Area */
+        .chart-container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            min-height: 500px;
+        }
+
+        .story-text {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        .story-title { font-weight: 600; font-size: 1.2rem; margin-bottom: 5px; color: #1e293b; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🤖 State of AI: From Hype to Utility</h1>
+        <div class="subtitle">Interactive Report | 2020 - 2025 Data Story</div>
+    </header>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-title">Global Adoption</div>
+            <div class="kpi-value">85%</div>
+            <div class="kpi-delta">▲ 13% Year over Year</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: #8b5cf6;">
+            <div class="kpi-title">Avg Efficiency Gain</div>
+            <div class="kpi-value">32%</div>
+            <div class="kpi-delta">Sector Average</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: #f59e0b;">
+            <div class="kpi-title">Market Value</div>
+            <div class="kpi-value">$420B</div>
+            <div class="kpi-delta">Predicted 2025</div>
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+        <aside class="controls">
+            <h3 style="margin-top:0; color:#cbd5e1; font-size:0.8rem; text-transform:uppercase;">Select View</h3>
+            <button class="nav-btn active" onclick="updateView('overview', this)">📈 Strategic Overview</button>
+            <button class="nav-btn" onclick="updateView('sector', this)">🏢 Sector Deep Dive</button>
+            <button class="nav-btn" onclick="updateView('future', this)">🔮 Future Outlook</button>
+            
+            <hr style="border:0; border-top:1px solid #e2e8f0; margin: 20px 0;">
+            <p style="font-size:0.8rem; color:#94a3b8; line-height: 1.5;">
+                <strong>Key Insight:</strong> <br>
+                The gap between media hype and actual corporate usage closed in 2024.
+            </p>
+        </aside>
+
+        <main class="chart-container">
+            <div id="story-box" class="story-text">
+                <div class="story-title">The Gap Between Hype and Reality</div>
+                In the early 2020s, media hype (Red) outpaced actual adoption (Blue). By 2024, the lines crossed: AI became a tool for work rather than just a topic of conversation.
+            </div>
+            <canvas id="mainChart"></canvas>
+        </main>
+    </div>
+</div>
+
+<script>
+    // --- DATA ---
+    const dataOverview = {
+        labels: [2020, 2021, 2022, 2023, 2024, 2025],
+        datasets: [
+            {
+                label: 'Corporate Adoption (%)',
+                data: [15, 22, 35, 55, 72, 85],
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderWidth: 3,
+                tension: 0.3,
+                fill: true
+            },
+            {
+                label: 'Media Hype Index',
+                data: [80, 85, 95, 90, 70, 60],
+                borderColor: '#ef4444',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                tension: 0.4,
+                fill: false
+            }
+        ]
+    };
+
+    const dataSector = {
+        labels: ["Tech", "Finance", "Healthcare", "Retail", "Manufacturing", "Education"],
+        datasets: [{
+            label: 'Adoption Rate (%)',
+            data: [95, 88, 72, 65, 58, 45],
+            backgroundColor: [
+                '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#e2e8f0'
+            ],
+            borderRadius: 5
+        }]
+    };
+
+    const dataFuture = {
+        labels: ["Generative (Text/Image)", "Predictive Analytics", "Workflow Automation", "Robotics"],
+        datasets: [{
+            data: [25, 30, 35, 10],
+            backgroundColor: ['#f472b6', '#818cf8', '#34d399', '#fbbf24'],
+            hoverOffset: 4
+        }]
+    };
+
+    // --- CHART LOGIC ---
+    let currentChart = null;
+
+    function renderChart(type) {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        
+        // Destroy existing chart if it exists
+        if (currentChart) {
+            currentChart.destroy();
+        }
+
+        // Configuration based on type
+        if (type === 'overview') {
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: dataOverview,
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+            updateStory("The Gap Between Hype and Reality", 
+                "In the early 2020s, media hype (Red) outpaced actual adoption (Blue). By 2024, the lines crossed: AI became a tool for work rather than just a topic of conversation.");
+        } 
+        else if (type === 'sector') {
+            currentChart = new Chart(ctx, {
+                type: 'bar',
+                data: dataSector,
+                options: {
+                    indexAxis: 'y', // Horizontal Bar
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true, max: 100 } }
+                }
+            });
+            updateStory("Who is winning the AI Race?", 
+                "While Tech and Finance have reached near-saturation, Traditional Manufacturing is rapidly climbing, driven by high-ROI predictive maintenance models.");
+        } 
+        else if (type === 'future') {
+            currentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: dataFuture,
+                options: {
+                    responsive: true,
+                    cutout: '60%',
+                    plugins: { 
+                        legend: { position: 'right' },
+                        title: { display: true, text: 'Allocation of Compute Resources (2025)' }
+                    }
+                }
+            });
+            updateStory("The Invisible Future", 
+                "Despite the fame of ChatGPT, the majority of AI compute power in 2025 is actually spent on 'Invisible AI'—Workflow Automation and Predictive Analytics that run in the background.");
+        }
+    }
+
+    // --- UI LOGIC ---
+    function updateStory(title, text) {
+        document.querySelector('.story-title').innerText = title;
+        document.querySelector('.story-text').childNodes[2].nodeValue = text;
+    }
+
+    function updateView(viewName, btnElement) {
+        // Remove active class from all buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        // Add active class to clicked button
+        btnElement.classList.add('active');
+        // Render Chart
+        renderChart(viewName);
+    }
+
+    // --- INITIAL LOAD ---
+    renderChart('overview');
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Adoption Intelligence Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .header-subtitle {
+            color: #64748b;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+        }
+
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0.5rem 0;
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .trend-up {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .trend-label {
+            color: #94a3b8;
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #334155;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select:hover {
+            border-color: #6366f1;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .charts-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1200px) {
+            .charts-grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .charts-grid, .charts-grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .chart-header {
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .chart-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Insights Panel */
+        .insights-panel {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .insights-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .insight-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-heading {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-text {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            padding: 1rem 0;
+        }
+
+        /* Stat highlight */
+        .stat-highlight {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <div class="header-icon">📊</div>
+                <h1>AI Adoption Intelligence</h1>
+            </div>
+            <p class="header-subtitle">
+                Comprehensive analysis of artificial intelligence adoption trends across industries,
+                regions, and company sizes. Data reflects 2019-2025 enterprise adoption patterns.
+            </p>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Global AI Adoption Rate</div>
+                <div class="kpi-value">70%</div>
+                <div class="kpi-trend">
+                    <span class="trend-up">↑ 14%</span>
+                    <span class="trend-label">YoY growth</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Enterprise Adoption</div>
+                <div class="kpi-value">85%</div>
+                <div class="kpi-trend">
+                    <span class="trend-up">↑ 7%</span>
+                    <span class="trend-label">from 2024</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Avg. Productivity Gain</div>
+                <div class="kpi-value">37%</div>
+                <div class="kpi-trend">
+                    <span class="trend-up">↑ 12%</span>
+                    <span class="trend-label">improvement</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">AI Investment (Global)</div>
+                <div class="kpi-value">$184B</div>
+                <div class="kpi-trend">
+                    <span class="trend-up">↑ 28%</span>
+                    <span class="trend-label">YoY increase</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <span class="filter-label">Segment:</span>
+                <select id="segmentFilter">
+                    <option value="all">All Segments</option>
+                    <option value="enterprise">Enterprise (1000+)</option>
+                    <option value="midMarket">Mid-Market (100-999)</option>
+                    <option value="smallBusiness">Small Business (<100)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Time Range:</span>
+                <select id="timeFilter">
+                    <option value="all">2019-2025 (All)</option>
+                    <option value="recent">2022-2025 (Recent)</option>
+                    <option value="latest">2024-2025 (Latest)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Main Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">AI Adoption Growth Trajectory</h3>
+                    <p class="chart-subtitle">Percentage of organizations actively using AI, 2019-2025</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="adoptionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Adoption by Industry</h3>
+                    <p class="chart-subtitle">Current AI adoption rates across key sectors</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="industryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secondary Charts -->
+        <div class="charts-grid-3">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Top AI Use Cases</h3>
+                    <p class="chart-subtitle">Distribution of primary AI applications</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="useCaseChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Regional Adoption</h3>
+                    <p class="chart-subtitle">AI adoption by geographic region</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="regionalChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Reported ROI Distribution</h3>
+                    <p class="chart-subtitle">Productivity gains from AI implementation</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="roiChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Panel -->
+        <div class="insights-panel">
+            <h2 class="insights-title">Key Executive Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-icon">🚀</div>
+                    <h3 class="insight-heading">Rapid Acceleration</h3>
+                    <p class="insight-text">
+                        AI adoption has grown 4.7x since 2019, with enterprise adoption reaching 85% in 2025.
+                        The gap between enterprise and SMB adoption is narrowing as tools become more accessible.
+                    </p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">💰</div>
+                    <h3 class="insight-heading">Proven ROI</h3>
+                    <p class="insight-text">
+                        57% of organizations report 25%+ productivity gains. Early adopters are seeing
+                        compounding benefits from AI maturity and organizational learning curves.
+                    </p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🎯</div>
+                    <h3 class="insight-heading">Strategic Imperative</h3>
+                    <p class="insight-text">
+                        Customer-facing applications lead adoption, but operational AI is growing fastest.
+                        Organizations without AI strategies risk significant competitive disadvantage.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Data synthesized from industry research trends (McKinsey, Deloitte, Gartner, IDC) • Updated January 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data
+        const adoptionData = {
+            labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+            enterprise: [23, 32, 47, 56, 72, 78, 85],
+            midMarket: [15, 22, 35, 42, 58, 65, 72],
+            smallBusiness: [8, 12, 19, 25, 38, 45, 52]
+        };
+
+        const industryData = {
+            labels: ['Tech & Software', 'Financial Services', 'Healthcare', 'Retail & E-commerce', 'Manufacturing', 'Media & Entertainment', 'Education', 'Government'],
+            values: [89, 78, 65, 62, 58, 54, 48, 35],
+            colors: ['#6366f1', '#7c3aed', '#8b5cf6', '#a855f7', '#c026d3', '#db2777', '#f43f5e', '#f97316']
+        };
+
+        const useCaseData = {
+            labels: ['Customer Service', 'Data Analytics', 'Process Automation', 'Content Generation', 'Predictive Maintenance', 'Other'],
+            values: [28, 24, 20, 15, 8, 5],
+            colors: ['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', '#94a3b8']
+        };
+
+        const regionalData = {
+            labels: ['North America', 'Asia Pacific', 'Europe', 'Middle East', 'Latin America', 'Africa'],
+            values: [72, 65, 58, 42, 38, 22],
+            colors: ['#6366f1', '#8b5cf6', '#a855f7', '#c026d3', '#ec4899', '#f97316']
+        };
+
+        const roiData = {
+            labels: ['<10%', '10-25%', '25-50%', '50-100%', '>100%'],
+            values: [15, 28, 32, 18, 7]
+        };
+
+        // Chart defaults
+        Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+        Chart.defaults.plugins.tooltip.padding = 12;
+        Chart.defaults.plugins.tooltip.cornerRadius = 8;
+
+        // Adoption Chart
+        const adoptionCtx = document.getElementById('adoptionChart').getContext('2d');
+        let adoptionChart = new Chart(adoptionCtx, {
+            type: 'line',
+            data: {
+                labels: adoptionData.labels,
+                datasets: [
+                    {
+                        label: 'Enterprise',
+                        data: adoptionData.enterprise,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Mid-Market',
+                        data: adoptionData.midMarket,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Small Business',
+                        data: adoptionData.smallBusiness,
+                        borderColor: '#d946ef',
+                        backgroundColor: 'rgba(217, 70, 239, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}%`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: (value) => value + '%'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Industry Chart
+        const industryCtx = document.getElementById('industryChart').getContext('2d');
+        new Chart(industryCtx, {
+            type: 'bar',
+            data: {
+                labels: industryData.labels,
+                datasets: [{
+                    data: industryData.values,
+                    backgroundColor: industryData.colors,
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `Adoption: ${ctx.parsed.x}%`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: (value) => value + '%'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Use Case Chart (Doughnut)
+        const useCaseCtx = document.getElementById('useCaseChart').getContext('2d');
+        new Chart(useCaseCtx, {
+            type: 'doughnut',
+            data: {
+                labels: useCaseData.labels,
+                datasets: [{
+                    data: useCaseData.values,
+                    backgroundColor: useCaseData.colors,
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: { size: 11 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `${ctx.label}: ${ctx.parsed}%`
+                        }
+                    }
+                }
+            }
+        });
+
+        // Regional Chart
+        const regionalCtx = document.getElementById('regionalChart').getContext('2d');
+        new Chart(regionalCtx, {
+            type: 'bar',
+            data: {
+                labels: regionalData.labels,
+                datasets: [{
+                    data: regionalData.values,
+                    backgroundColor: regionalData.colors,
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `Adoption: ${ctx.parsed.y}%`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: (value) => value + '%'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: { size: 10 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // ROI Chart
+        const roiCtx = document.getElementById('roiChart').getContext('2d');
+        new Chart(roiCtx, {
+            type: 'bar',
+            data: {
+                labels: roiData.labels,
+                datasets: [{
+                    label: 'Companies',
+                    data: roiData.values,
+                    backgroundColor: roiData.values.map((v, i) => i === 2 ? '#6366f1' : '#a5b4fc'),
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `${ctx.parsed.y}% of companies`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (value) => value + '%'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'ROI Range',
+                            color: '#64748b',
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Filter functionality
+        document.getElementById('segmentFilter').addEventListener('change', function() {
+            const segment = this.value;
+
+            adoptionChart.data.datasets.forEach((dataset, index) => {
+                if (segment === 'all') {
+                    dataset.hidden = false;
+                } else if (segment === 'enterprise') {
+                    dataset.hidden = index !== 0;
+                } else if (segment === 'midMarket') {
+                    dataset.hidden = index !== 1;
+                } else if (segment === 'smallBusiness') {
+                    dataset.hidden = index !== 2;
+                }
+            });
+
+            adoptionChart.update();
+        });
+
+        document.getElementById('timeFilter').addEventListener('change', function() {
+            const range = this.value;
+            let labels, enterprise, midMarket, smallBusiness;
+
+            if (range === 'all') {
+                labels = adoptionData.labels;
+                enterprise = adoptionData.enterprise;
+                midMarket = adoptionData.midMarket;
+                smallBusiness = adoptionData.smallBusiness;
+            } else if (range === 'recent') {
+                labels = adoptionData.labels.slice(3);
+                enterprise = adoptionData.enterprise.slice(3);
+                midMarket = adoptionData.midMarket.slice(3);
+                smallBusiness = adoptionData.smallBusiness.slice(3);
+            } else if (range === 'latest') {
+                labels = adoptionData.labels.slice(5);
+                enterprise = adoptionData.enterprise.slice(5);
+                midMarket = adoptionData.midMarket.slice(5);
+                smallBusiness = adoptionData.smallBusiness.slice(5);
+            }
+
+            adoptionChart.data.labels = labels;
+            adoptionChart.data.datasets[0].data = enterprise;
+            adoptionChart.data.datasets[1].data = midMarket;
+            adoptionChart.data.datasets[2].data = smallBusiness;
+            adoptionChart.update();
+        });
+    </script>
+</body>
+</html>

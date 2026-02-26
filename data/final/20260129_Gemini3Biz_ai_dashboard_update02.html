@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Integration Horizon Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .header { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
+        .header h1 { margin: 0; color: #2c3e50; }
+        .header p { color: #7f8c8d; font-style: italic; margin-top: 10px; }
+
+        .row { display: flex; flex-wrap: wrap; margin: 0 -10px; }
+        .col { flex: 1; padding: 0 10px; min-width: 300px; margin-bottom: 20px; }
+        .card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); padding: 20px; height: 100%; }
+        
+        h2 { font-size: 1.2rem; color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-top: 0; }
+        .insight { background-color: #e8f6f3; border-left: 4px solid #1abc9c; padding: 10px; margin-top: 10px; font-size: 0.9rem; }
+        .alert { background-color: #fdedec; border-left: 4px solid #e74c3c; padding: 10px; margin-top: 10px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="header">
+        <h1>🤖 The AI Integration Horizon</h1>
+        <p>Visualizing the "Efficiency-Anxiety Gap" in Modern Workforce Adoption</p>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <h2>Act 1: The Exponential Adoption Curve</h2>
+                <div id="chart1"></div>
+                <div class="insight">
+                    <strong>Story:</strong> Adoption hit an inflection point in 2022. We are currently shifting from "Explosion" to "Saturation."
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <h2>Act 2: Industry Usage vs. ROI</h2>
+                <div id="chart2"></div>
+                <div class="insight">
+                    <strong>Story:</strong> Tech & Marketing (left) are maximizing ROI. Traditional sectors (Healthcare/Legal) face an "Integration Gap" where usage exists but ROI is lower.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <h2>Act 3: The Efficiency-Anxiety Gap</h2>
+                <div id="chart3"></div>
+                <div class="alert">
+                    <strong>Critical Insight:</strong> Departments with the highest productivity gains (Copywriting, Support) report the highest job anxiety. Coding is the outlier: high gain, low fear.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- CHART 1: ADOPTION CURVE ---
+    var trace1 = {
+        x: [2020, 2021, 2022, 2023, 2024, 2025],
+        y: [12, 18, 35, 65, 82, 91],
+        mode: 'lines+markers',
+        name: 'Adoption %',
+        line: {shape: 'spline', color: '#00CC96', width: 4},
+        text: ['Early', 'Early', 'Inflection', 'Explosion', 'Saturation', 'Integration'],
+        textposition: 'top left'
+    };
+
+    var layout1 = {
+        title: 'Global Enterprise AI Adoption %',
+        xaxis: {title: 'Year'},
+        yaxis: {title: 'Adoption Rate (%)', range: [0, 100]},
+        margin: {t: 40, b: 40, l: 50, r: 20}
+    };
+
+    Plotly.newPlot('chart1', [trace1], layout1);
+
+    // --- CHART 2: INDUSTRY SPLIT ---
+    var industries = ["Tech", "Marketing", "Finance", "Healthcare", "Manufacturing", "Legal"];
+    
+    var trace2a = {
+        x: industries,
+        y: [95, 88, 72, 60, 45, 40],
+        name: 'Usage Rate',
+        type: 'bar',
+        marker: {color: '#636EFA'}
+    };
+    
+    var trace2b = {
+        x: industries,
+        y: [85, 80, 75, 50, 40, 25],
+        name: 'Perceived ROI',
+        type: 'bar',
+        marker: {color: '#EF553B'}
+    };
+
+    var layout2 = {
+        barmode: 'group',
+        title: 'Usage Frequency vs. Business Value',
+        margin: {t: 40, b: 40, l: 50, r: 20}
+    };
+
+    Plotly.newPlot('chart2', [trace2a, trace2b], layout2);
+
+    // --- CHART 3: SENTIMENT SCATTER ---
+    var depts = ["Coding", "Copywriting", "Customer Support", "HR", "Logistics", "Legal Research", "Design"];
+    
+    var trace3 = {
+        x: [90, 85, 70, 40, 50, 60, 75], // Productivity
+        y: [30, 70, 80, 20, 15, 45, 65], // Anxiety
+        mode: 'markers+text',
+        text: depts,
+        textposition: 'top center',
+        marker: {
+            size: [40, 25, 50, 20, 30, 15, 20], // Workforce size
+            color: [30, 70, 80, 20, 15, 45, 65], // Color by anxiety
+            colorscale: 'Viridis',
+            showscale: true,
+            colorbar: {title: 'Anxiety Level'}
+        }
+    };
+
+    var layout3 = {
+        title: 'Correlation: Productivity Gain vs. Workforce Anxiety',
+        xaxis: {title: 'Productivity Gain (%)', range: [30, 100]},
+        yaxis: {title: 'Job Insecurity Anxiety (0-100)', range: [0, 100]},
+        shapes: [
+            // Danger Zone Box
+            {
+                type: 'rect',
+                x0: 60, y0: 60, x1: 100, y1: 100,
+                line: {color: 'rgba(255, 0, 0, 0.5)', width: 2, dash: 'dot'},
+                fillcolor: 'rgba(255, 0, 0, 0.1)'
+            }
+        ],
+        annotations: [
+            {
+                x: 95, y: 95,
+                xref: 'x', yref: 'y',
+                text: 'High Efficiency / High Fear',
+                showarrow: false,
+                font: {color: 'red'}
+            }
+        ],
+        margin: {t: 40, b: 40, l: 50, r: 20}
+    };
+
+    Plotly.newPlot('chart3', [trace3], layout3);
+
+</script>
+
+</body>
+</html>

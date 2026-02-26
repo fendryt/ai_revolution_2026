@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Revolution Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+            color: #1e293b;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            color: #64748b;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid;
+        }
+
+        .stat-card.blue { border-color: #3b82f6; }
+        .stat-card.green { border-color: #10b981; }
+        .stat-card.purple { border-color: #8b5cf6; }
+        .stat-card.orange { border-color: #f59e0b; }
+
+        .stat-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-card .change {
+            display: inline-block;
+            font-size: 0.875rem;
+            color: #10b981;
+            background: #d1fae5;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .story-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .story-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        .story-section p {
+            margin-bottom: 1rem;
+            color: #475569;
+            font-size: 1rem;
+        }
+
+        .story-section .period {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .story-section .period.blue { color: #3b82f6; }
+        .story-section .period.green { color: #10b981; }
+        .story-section .period.purple { color: #8b5cf6; }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-container.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        .challenges-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .challenge-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .challenge-value {
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .challenge-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .challenge-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 100%);
+            transition: width 1s ease-out;
+            border-radius: 9999px;
+        }
+
+        .insights-section {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .insights-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .insight-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .insight-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .insight-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .insight-content p {
+            color: #dbeafe;
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-wrapper {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 The AI Revolution</h1>
+            <p>A data-driven journey through enterprise AI adoption, from early experimentation to mainstream integration</p>
+        </div>
+
+        <!-- Key Stats -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="icon">📈</div>
+                <div class="label">Avg Adoption Rate</div>
+                <div class="value">82%</div>
+                <span class="change">+15%</span>
+            </div>
+            <div class="stat-card green">
+                <div class="icon">👥</div>
+                <div class="label">Companies Using AI</div>
+                <div class="value">4.2M</div>
+                <span class="change">+32%</span>
+            </div>
+            <div class="stat-card purple">
+                <div class="icon">💰</div>
+                <div class="label">Market Value</div>
+                <div class="value">$196B</div>
+                <span class="change">+41%</span>
+            </div>
+            <div class="stat-card orange">
+                <div class="icon">⚡</div>
+                <div class="label">Productivity Gain</div>
+                <div class="value">40%</div>
+                <span class="change">+8%</span>
+            </div>
+        </div>
+
+        <!-- Story Section -->
+        <div class="story-section">
+            <h2>📖 The Story</h2>
+            <p>
+                <span class="period blue">2020-2021:</span> The pandemic accelerated digital transformation, pushing early adopters in tech and finance to experiment with AI for automation and remote work solutions. Adoption was cautious but purposeful.
+            </p>
+            <p>
+                <span class="period green">2022-2023:</span> The breakthrough moment. ChatGPT and generative AI captured public imagination, triggering explosive growth across all sectors. Healthcare and retail began catching up rapidly.
+            </p>
+            <p>
+                <span class="period purple">2024-2025:</span> Maturity phase. Companies moved from experimentation to strategic integration. ROI became measurable, and AI transformed from competitive advantage to business necessity.
+            </p>
+        </div>
+
+        <!-- Adoption Timeline Chart -->
+        <div class="chart-container full-width">
+            <h2>📈 Adoption Timeline by Industry</h2>
+            <div class="chart-wrapper">
+                <canvas id="timelineChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Two Column Charts -->
+        <div class="chart-grid">
+            <div class="chart-container">
+                <h2>🎯 Current Adoption (2025)</h2>
+                <div class="chart-wrapper">
+                    <canvas id="adoptionChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h2>💡 Primary Use Cases</h2>
+                <div class="chart-wrapper">
+                    <canvas id="useCasesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact and ROI Charts -->
+        <div class="chart-grid">
+            <div class="chart-container">
+                <h2>⚡ Business Impact</h2>
+                <div class="chart-wrapper">
+                    <canvas id="impactChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h2>💰 ROI Evolution</h2>
+                <div class="chart-wrapper">
+                    <canvas id="roiChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Challenges Section -->
+        <div class="challenges-section">
+            <h2>⚠️ Key Challenges</h2>
+            <div id="challengesContainer"></div>
+        </div>
+
+        <!-- Insights Section -->
+        <div class="insights-section">
+            <h2>🔑 Key Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-item">
+                    <div class="insight-icon">✅</div>
+                    <div class="insight-content">
+                        <h3>Widespread Adoption</h3>
+                        <p>Over 80% of major enterprises now use AI in some capacity, with tech leading at 95%</p>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">✅</div>
+                    <div class="insight-content">
+                        <h3>ROI Acceleration</h3>
+                        <p>ROI has nearly sextupled from 15% to 89% over 8 quarters as implementations mature</p>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">✅</div>
+                    <div class="insight-content">
+                        <h3>Automation Dominates</h3>
+                        <p>28% of AI use cases focus on automation, driving immediate productivity gains</p>
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">⚠️</div>
+                    <div class="insight-content">
+                        <h3>Persistent Challenges</h3>
+                        <p>Data quality and skills gaps remain the top barriers to successful implementation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Data represents aggregated trends from industry reports and surveys (2020-2025)</p>
+            <p>Dashboard created with Chart.js and vanilla JavaScript</p>
+        </div>
+    </div>
+
+    <script>
+        // Chart.js default settings
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif';
+        Chart.defaults.color = '#64748b';
+
+        // Adoption Timeline Chart
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        new Chart(timelineCtx, {
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                datasets: [
+                    {
+                        label: 'Technology',
+                        data: [45, 58, 72, 84, 91, 95],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3
+                    },
+                    {
+                        label: 'Finance',
+                        data: [38, 52, 65, 76, 85, 90],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3
+                    },
+                    {
+                        label: 'Healthcare',
+                        data: [28, 38, 51, 64, 75, 82],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3
+                    },
+                    {
+                        label: 'Retail',
+                        data: [25, 35, 48, 60, 71, 79],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3
+                    },
+                    {
+                        label: 'Manufacturing',
+                        data: [22, 30, 42, 55, 68, 76],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3
+                    },
+                    {
+                        label: 'Education',
+                        data: [18, 25, 35, 48, 62, 72],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        grid: {
+                            color: '#e2e8f0'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Current Adoption Chart
+        const adoptionCtx = document.getElementById('adoptionChart').getContext('2d');
+        new Chart(adoptionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Technology', 'Finance', 'Healthcare', 'Retail', 'Manufacturing', 'Education'],
+                datasets: [{
+                    label: 'Adoption Rate',
+                    data: [95, 90, 82, 79, 76, 72],
+                    backgroundColor: [
+                        '#3b82f6',
+                        '#10b981',
+                        '#8b5cf6',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#06b6d4'
+                    ],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Adoption: ' + context.parsed.x + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        grid: {
+                            color: '#e2e8f0'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Use Cases Chart
+        const useCasesCtx = document.getElementById('useCasesChart').getContext('2d');
+        new Chart(useCasesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Automation', 'Customer Service', 'Data Analysis', 'Content Creation', 'Predictive Analytics', 'Other'],
+                datasets: [{
+                    data: [28, 22, 18, 15, 10, 7],
+                    backgroundColor: [
+                        '#3b82f6',
+                        '#10b981',
+                        '#8b5cf6',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#6b7280'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Business Impact Chart
+        const impactCtx = document.getElementById('impactChart').getContext('2d');
+        new Chart(impactCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Productivity', 'Cost Savings', 'Innovation', 'Customer Satisfaction', 'Revenue Growth', 'Employee Efficiency'],
+                datasets: [{
+                    label: 'Impact Score',
+                    data: [85, 72, 88, 78, 65, 81],
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: '#3b82f6',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#3b82f6'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20
+                        },
+                        grid: {
+                            color: '#e2e8f0'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // ROI Evolution Chart
+        const roiCtx = document.getElementById('roiChart').getContext('2d');
+        new Chart(roiCtx, {
+            type: 'line',
+            data: {
+                labels: ['Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'],
+                datasets: [
+                    {
+                        label: 'ROI %',
+                        data: [15, 22, 31, 42, 55, 68, 79, 89],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3,
+                        fill: true
+                    },
+                    {
+                        label: 'Investment Level',
+                        data: [45, 52, 58, 65, 71, 78, 84, 88],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        grid: {
+                            color: '#e2e8f0'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Challenges rendering
+        const challenges = [
+            { name: 'Data Quality', value: 75 },
+            { name: 'Skills Gap', value: 68 },
+            { name: 'Integration', value: 62 },
+            { name: 'Cost', value: 58 },
+            { name: 'Security Concerns', value: 71 },
+            { name: 'Change Management', value: 55 }
+        ];
+
+        const challengesContainer = document.getElementById('challengesContainer');
+        challenges.forEach(challenge => {
+            const item = document.createElement('div');
+            item.className = 'challenge-item';
+            item.innerHTML = `
+                <div class="challenge-header">
+                    <span class="challenge-name">${challenge.name}</span>
+                    <span class="challenge-value">${challenge.value}%</span>
+                </div>
+                <div class="challenge-bar">
+                    <div class="challenge-fill" style="width: 0%"></div>
+                </div>
+            `;
+            challengesContainer.appendChild(item);
+        });
+
+        // Animate challenge bars
+        setTimeout(() => {
+            const fills = document.querySelectorAll('.challenge-fill');
+            fills.forEach((fill, index) => {
+                fill.style.width = challenges[index].value + '%';
+            });
+        }, 100);
+    </script>
+</body>
+</html>

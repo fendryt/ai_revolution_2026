@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Pulse 2026: The Great Acceleration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        body { background-color: #0f172a; color: #f8fafc; }
+        .card { background-color: #1e293b; border: 1px solid #334155; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-6xl mx-auto mb-10 text-center">
+        <h1 class="text-4xl font-extrabold text-blue-400 mb-2">The Great Acceleration</h1>
+        <p class="text-slate-400 text-lg">A 2026 Retrospective on AI Integration & Impact</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="card p-6 rounded-xl shadow-lg text-center">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase">Avg. Time Saved</h3>
+            <p class="text-3xl font-bold text-green-400">12.5 hrs/wk</p>
+            <p class="text-xs text-slate-500 mt-2">+4.2 hrs from 2025</p>
+        </div>
+        <div class="card p-6 rounded-xl shadow-lg text-center">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase">Enterprise Adoption</h3>
+            <p class="text-3xl font-bold text-blue-400">94%</p>
+            <p class="text-xs text-slate-500 mt-2">Global Market Saturation</p>
+        </div>
+        <div class="card p-6 rounded-xl shadow-lg text-center">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase">Agent-Led Tasks</h3>
+            <p class="text-3xl font-bold text-purple-400">40%</p>
+            <p class="text-xs text-slate-500 mt-2">Autonomous Workflows</p>
+        </div>
+
+        <div class="card p-6 rounded-xl shadow-lg md:col-span-2">
+            <h2 class="text-xl font-bold mb-4">Chapter 1: The Viral Window</h2>
+            <p class="text-sm text-slate-400 mb-4">Years taken to reach 100 million users. AI shattered the record of every previous major tech.</p>
+            <div class="chart-container">
+                <canvas id="adoptionChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card p-6 rounded-xl shadow-lg flex flex-col justify-center">
+            <h2 class="text-xl font-bold mb-4 text-blue-300">The Insight</h2>
+            <blockquote class="border-l-4 border-blue-500 pl-4 italic text-slate-300">
+                "By 2026, the question shifted from 'How do I use AI?' to 'How do I manage my AI agents?'"
+            </blockquote>
+            <p class="mt-4 text-sm text-slate-400">
+                The adoption curve isn't just a line; it's a structural shift in how humans interact with silicon.
+            </p>
+        </div>
+
+        <div class="card p-6 rounded-xl shadow-lg md:col-span-3">
+            <h2 class="text-xl font-bold mb-4">Chapter 2: The Functional Migration</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="usageChart"></canvas>
+                </div>
+                <div>
+                    <h4 class="font-bold text-purple-400 mb-2">Shift: Creative → Operational</h4>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        In 2023, AI was a novelty for <b>Content Creation</b>. Fast forward to 2026, and the primary growth sector is <b>Autonomous Agents</b>—systems that don't just write emails, but execute entire supply chain updates and complex data modeling without constant oversight.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Adoption Chart
+        const ctx1 = document.getElementById('adoptionChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Telephone', 'Internet', 'Mobile', 'Instagram', 'GenAI'],
+                datasets: [{
+                    label: 'Years to 100M Users',
+                    data: [75, 7, 16, 2.5, 0.2],
+                    backgroundColor: ['#334155', '#334155', '#334155', '#334155', '#60a5fa'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#334155' } },
+                    x: { grid: { display: false } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Usage Radar Chart
+        const ctx2 = document.getElementById('usageChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'radar',
+            data: {
+                labels: ['Content Creation', 'Coding', 'Research', 'Autonomous Agents', 'Data Analysis'],
+                datasets: [{
+                    label: '2023 Usage %',
+                    data: [40, 25, 20, 5, 10],
+                    borderColor: '#94a3b8',
+                    backgroundColor: 'rgba(148, 163, 184, 0.2)'
+                }, {
+                    label: '2026 Usage %',
+                    data: [15, 10, 20, 35, 20],
+                    borderColor: '#a855f7',
+                    backgroundColor: 'rgba(168, 85, 247, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        grid: { color: '#334155' },
+                        angleLines: { color: '#334155' },
+                        pointLabels: { color: '#94a3b8' },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Advanced AI Adoption Dashboard</title>
+
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <!-- Styling -->
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      background: #f4f6fa;
+      color: #222;
+    }
+
+    header {
+      background: #1f3c88;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav {
+      background: #142850;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+    }
+
+    nav a {
+      color: #dce6f2;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 4px;
+    }
+
+    nav a:hover {
+      background: #27496d;
+    }
+
+    .page {
+      display: none;
+      padding: 30px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    select {
+      padding: 6px 10px;
+      font-size: 1rem;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>AI Adoption & Impact Dashboard</h1>
+    <p>Interactive, multi‑page insights into global AI adoption trends</p>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('timeseries')">Time‑Series</a>
+    <a href="#" onclick="showPage('regions')">Regions</a>
+    <a href="#" onclick="showPage('usecases')">Use‑Cases</a>
+  </nav>
+
+  <!-- HOME PAGE -->
+  <section id="home" class="page active">
+    <div class="card">
+      <h2>Welcome</h2>
+      <p>
+        Explore AI adoption across time, regions, and use‑cases. Navigate using the menu above.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Overview</h2>
+      <div id="overviewChart"></div>
+    </div>
+  </section>
+
+  <!-- TIME SERIES PAGE -->
+  <section id="timeseries" class="page">
+    <div class="card">
+      <h2>AI Adoption Over Time (Animated)</h2>
+      <p>Watch how AI adoption has grown from 2018 to 2024.</p>
+      <div id="timeSeriesChart"></div>
+    </div>
+  </section>
+
+  <!-- REGIONS PAGE -->
+  <section id="regions" class="page">
+    <div class="card">
+      <h2>AI Adoption by Region</h2>
+      <p>Explore how AI adoption varies across the world.</p>
+      <div id="regionMap"></div>
+    </div>
+  </section>
+
+  <!-- USE CASES PAGE -->
+  <section id="usecases" class="page">
+    <div class="card">
+      <h2>AI Use‑Case Drill‑Down</h2>
+
+      <div class="filters">
+        <div>
+          <label><strong>Select Industry:</strong></label><br />
+          <select id="usecaseIndustry">
+            <option value="Technology">Technology</option>
+            <option value="Finance">Finance</option>
+            <option value="Healthcare">Healthcare</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="usecaseChart"></div>
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    /* -------------------------
+       PAGE NAVIGATION
+    ------------------------- */
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(pageId).classList.add("active");
+    }
+
+    /* -------------------------
+       OVERVIEW CHART
+    ------------------------- */
+    function renderOverview() {
+      const data = {
+        metrics: [
+          "GenAI Regular Usage",
+          "AI in ≥1 Business Function",
+          "Tech Sector Adoption",
+          "Finance Adoption",
+          "Healthcare Adoption"
+        ],
+        values: [65, 40, 72, 67, 61]
+      };
+
+      Plotly.newPlot("overviewChart", [{
+        x: data.metrics,
+        y: data.values,
+        type: "bar",
+        marker: { color: "#4c78a8" }
+      }], {
+        title: "Overall AI Adoption Snapshot",
+        xaxis: { tickangle: -30 },
+        yaxis: { title: "Adoption (%)", range: [0, 100] }
+      });
+    }
+
+    /* -------------------------
+       TIME SERIES ANIMATION
+    ------------------------- */
+    function renderTimeSeries() {
+      const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+      const adoption = [22, 28, 35, 45, 55, 62, 70];
+
+      const frames = years.map((year, i) => ({
+        name: year,
+        data: [{ x: [year], y: [adoption[i]] }]
+      }));
+
+      Plotly.newPlot("timeSeriesChart", [{
+        x: [years[0]],
+        y: [adoption[0]],
+        mode: "lines+markers",
+        line: { color: "#1f77b4", width: 4 }
+      }], {
+        title: "AI Adoption Over Time",
+        xaxis: { title: "Year", range: [2018, 2024] },
+        yaxis: { title: "Adoption (%)", range: [0, 100] },
+        updatemenus: [{
+          type: "buttons",
+          buttons: [{
+            label: "Play",
+            method: "animate",
+            args: [null, { frame: { duration: 600, redraw: true } }]
+          }]
+        }]
+      }).then(() => {
+        Plotly.addFrames("timeSeriesChart", frames);
+      });
+    }
+
+    /* -------------------------
+       REGION MAP
+    ------------------------- */
+    function renderRegionMap() {
+      const regions = ["United States", "Canada", "Germany", "India", "China", "Brazil"];
+      const adoption = [72, 68, 65, 58, 70, 55];
+
+      Plotly.newPlot("regionMap", [{
+        type: "choropleth",
+        locationmode: "country names",
+        locations: regions,
+        z: adoption,
+        colorscale: "Blues",
+        colorbar: { title: "Adoption (%)" }
+      }], {
+        title: "Global AI Adoption by Region",
+      });
+    }
+
+    /* -------------------------
+       USE CASE DRILL-DOWN
+    ------------------------- */
+    const usecaseData = {
+      "Technology": { Automation: 85, Analytics: 78, "Generative AI": 72 },
+      "Finance": { Automation: 80, Analytics: 74, "Generative AI": 67 },
+      "Healthcare": { Automation: 70, Analytics: 65, "Generative AI": 61 }
+    };
+
+    function renderUsecaseChart(industry) {
+      const d = usecaseData[industry];
+
+      Plotly.newPlot("usecaseChart", [{
+        x: Object.keys(d),
+        y: Object.values(d),
+        type: "bar",
+        marker: { color: ["#1f77b4", "#ff7f0e", "#2ca02c"] }
+      }], {
+        title: `${industry} AI Use‑Case Breakdown`,
+        yaxis: { title: "Adoption (%)", range: [0, 100] }
+      });
+    }
+
+    document.getElementById("usecaseIndustry").addEventListener("change", e => {
+      renderUsecaseChart(e.target.value);
+    });
+
+    /* -------------------------
+       INITIAL RENDER
+    ------------------------- */
+    renderOverview();
+    renderTimeSeries();
+    renderRegionMap();
+    renderUsecaseChart("Technology");
+  </script>
+
+</body>
+</html>

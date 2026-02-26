@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn the Claude API</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;600;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #FFF8F0;
+            --rust: #D4745C;
+            --deep-rust: #B35843;
+            --navy: #1E3456;
+            --slate: #4A5E7D;
+            --sage: #9DAF95;
+            --gold: #F4A261;
+            --shadow: rgba(30, 52, 86, 0.15);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--navy);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: var(--rust);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--slate);
+            font-weight: 400;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: rgba(212, 116, 92, 0.1);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--rust), var(--gold));
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step {
+            background: white;
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px var(--shadow);
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step.locked {
+            pointer-events: none;
+            filter: grayscale(0.5);
+            opacity: 0.4;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 40px;
+            background: var(--rust);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(212, 116, 92, 0.3);
+        }
+
+        .step.completed .step-number {
+            background: var(--sage);
+        }
+
+        h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: var(--slate);
+            font-size: 1.05rem;
+        }
+
+        .code-block {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 30px;
+            border-radius: 16px;
+            margin: 25px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--rust), var(--gold));
+        }
+
+        .highlight {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .keyword {
+            color: var(--sage);
+        }
+
+        .string {
+            color: #E9C46A;
+        }
+
+        .interactive-box {
+            background: linear-gradient(135deg, rgba(212, 116, 92, 0.05), rgba(244, 162, 97, 0.05));
+            border: 2px solid var(--rust);
+            border-radius: 20px;
+            padding: 35px;
+            margin: 30px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(30, 52, 86, 0.2);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--rust);
+            box-shadow: 0 0 0 4px rgba(212, 116, 92, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+
+        button {
+            background: var(--rust);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 116, 92, 0.3);
+        }
+
+        button:hover {
+            background: var(--deep-rust);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 116, 92, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: var(--slate);
+            cursor: not-allowed;
+            opacity: 0.5;
+            transform: none;
+        }
+
+        .output-box {
+            background: white;
+            border: 2px solid rgba(30, 52, 86, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            min-height: 100px;
+            font-size: 1rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .success {
+            background: rgba(157, 175, 149, 0.15);
+            border: 2px solid var(--sage);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .success::before {
+            content: '✓';
+            background: var(--sage);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .tip {
+            background: rgba(244, 162, 97, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 25px 0;
+        }
+
+        .tip strong {
+            color: var(--gold);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .next-step-btn {
+            background: var(--sage);
+            margin-top: 20px;
+            display: none;
+        }
+
+        .next-step-btn.show {
+            display: inline-block;
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        .accordion {
+            background: rgba(30, 52, 86, 0.05);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--navy);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: rgba(30, 52, 86, 0.08);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 20px;
+        }
+
+        .accordion-content.open {
+            max-height: 1000px;
+            padding: 0 20px 20px 20px;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: white;
+            padding: 60px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .celebration.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .step {
+                padding: 30px 25px;
+            }
+            
+            .container {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Learn the Claude API</h1>
+            <p class="subtitle">A hands-on journey from zero to making your first API call</p>
+        </header>
+
+        <!-- Step 1: Understanding the Basics -->
+        <div class="step visible" id="step1">
+            <div class="step-number">1</div>
+            <h2>What is an API?</h2>
+            <p>Think of an API as a conversation. You ask Claude a question, and Claude responds. But instead of typing in a chat interface, your code sends the question and receives the answer.</p>
+            
+            <div class="tip">
+                <strong>💡 Real-world analogy</strong>
+                It's like sending a text message to a really smart friend. You write your message, hit send, and wait for their reply. The Claude API works the same way!
+            </div>
+
+            <p>The basic flow is simple:</p>
+            <div class="code-block">
+<span class="keyword">You</span>: <span class="string">"Hey Claude, explain quantum physics simply"</span>
+<span class="keyword">Claude</span>: <span class="string">"Quantum physics is the study of how tiny particles..."</span>
+            </div>
+
+            <div class="interactive-box">
+                <p><strong>Let's start simple.</strong> What would you like to ask Claude? Type anything you're curious about:</p>
+                <div class="input-group">
+                    <input type="text" id="firstQuestion" placeholder="e.g., What makes a good pizza?" />
+                </div>
+                <button onclick="completeStep1()">Continue →</button>
+            </div>
+
+            <div class="success" id="step1Success" style="display: none;">
+                <span>Great! Now you understand the basic idea. Let's see how this works in code.</span>
+            </div>
+        </div>
+
+        <!-- Step 2: The API Request Structure -->
+        <div class="step locked" id="step2">
+            <div class="step-number">2</div>
+            <h2>Building Your First Request</h2>
+            <p>Every API call to Claude needs three essential ingredients. Think of it like baking a cake - miss one ingredient and it won't work!</p>
+
+            <div class="code-block">
+<span class="keyword">const</span> response = <span class="keyword">await</span> <span class="highlight">fetch</span>(<span class="string">"https://api.anthropic.com/v1/messages"</span>, {
+  <span class="highlight">method</span>: <span class="string">"POST"</span>,
+  <span class="highlight">headers</span>: {
+    <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span>,
+  },
+  <span class="highlight">body</span>: <span class="highlight">JSON.stringify</span>({
+    <span class="highlight">model</span>: <span class="string">"claude-sonnet-4-20250514"</span>,
+    <span class="highlight">max_tokens</span>: <span class="string">1000</span>,
+    <span class="highlight">messages</span>: [
+      { <span class="highlight">role</span>: <span class="string">"user"</span>, <span class="highlight">content</span>: <span class="string">"Your question here"</span> }
+    ]
+  })
+});
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>🔍 Breaking down each part</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p><strong>model:</strong> Which version of Claude to use (like choosing which expert to talk to)</p>
+                    <p><strong>max_tokens:</strong> Maximum length of the response (roughly 4 characters per token)</p>
+                    <p><strong>messages:</strong> Your conversation history - at minimum, your question</p>
+                </div>
+            </div>
+
+            <div class="interactive-box">
+                <p><strong>Now you try!</strong> Remember your question from Step 1? Let's structure it properly:</p>
+                <div class="input-group">
+                    <label>Your question:</label>
+                    <input type="text" id="step2Question" value="" readonly />
+                </div>
+                <div class="input-group">
+                    <label>Choose max response length (tokens):</label>
+                    <input type="text" id="maxTokens" value="1000" />
+                </div>
+                <button onclick="completeStep2()">Structure My Request →</button>
+                
+                <div id="step2Output" style="display: none;">
+                    <p style="margin-top: 20px;"><strong>✨ Your structured API request:</strong></p>
+                    <div class="output-box" id="structuredRequest"></div>
+                </div>
+            </div>
+
+            <button class="next-step-btn" id="step2Next" onclick="unlockStep(3)">Continue to Step 3 →</button>
+        </div>
+
+        <!-- Step 3: Making the Actual Call -->
+        <div class="step locked" id="step3">
+            <div class="step-number">3</div>
+            <h2>Making the Magic Happen</h2>
+            <p>Now for the exciting part - actually talking to Claude! In this tutorial environment, the API key is already configured, so you can focus on the request itself.</p>
+
+            <div class="tip">
+                <strong>🔑 About API Keys</strong>
+                In a real application, you'd need an API key from console.anthropic.com. It's like a password that identifies your application. Never share it publicly!
+            </div>
+
+            <div class="interactive-box">
+                <p><strong>Let's make a real call!</strong> Type any prompt below and watch Claude respond in real-time:</p>
+                <div class="input-group">
+                    <label>Your message to Claude:</label>
+                    <textarea id="apiPrompt" placeholder="Try something like: Write a haiku about coding"></textarea>
+                </div>
+                <button onclick="makeAPICall()" id="apiCallBtn">Send to Claude ✨</button>
+                
+                <div id="apiResponse" style="display: none;">
+                    <p style="margin-top: 20px;"><strong>📨 Claude's Response:</strong></p>
+                    <div class="output-box" id="claudeResponse"></div>
+                </div>
+            </div>
+
+            <button class="next-step-btn" id="step3Next" onclick="unlockStep(4)">Continue to Step 4 →</button>
+        </div>
+
+        <!-- Step 4: Understanding Responses -->
+        <div class="step locked" id="step4">
+            <div class="step-number">4</div>
+            <h2>Reading Claude's Response</h2>
+            <p>When Claude responds, you get back a JSON object with several pieces of information. The most important part is the actual text response.</p>
+
+            <div class="code-block">
+<span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="highlight">json</span>();
+
+<span class="comment">// The response structure looks like this:</span>
+{
+  <span class="string">"content"</span>: [
+    {
+      <span class="string">"type"</span>: <span class="string">"text"</span>,
+      <span class="string">"text"</span>: <span class="highlight">"This is Claude's actual response!"</span>
+    }
+  ],
+  <span class="string">"model"</span>: <span class="string">"claude-sonnet-4-20250514"</span>,
+  <span class="string">"role"</span>: <span class="string">"assistant"</span>
+}
+
+<span class="comment">// To get just the text:</span>
+<span class="keyword">const</span> message = data.content[<span class="string">0</span>].text;
+            </div>
+
+            <div class="interactive-box">
+                <p><strong>Let's parse a response together.</strong> Here's a sample response from Claude:</p>
+                <div class="output-box" id="sampleResponse" style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
+{
+  "content": [{"type": "text", "text": "Hello! I'm here to help."}],
+  "model": "claude-sonnet-4-20250514",
+  "role": "assistant"
+}
+                </div>
+                <p style="margin-top: 20px;">Which line contains the actual message text?</p>
+                <button onclick="parseResponse('A')">A) "model": "claude-sonnet-4-20250514"</button>
+                <button onclick="parseResponse('B')" style="margin-left: 10px;">B) "text": "Hello! I'm here to help."</button>
+                
+                <div id="parseResult" style="display: none; margin-top: 20px;"></div>
+            </div>
+
+            <button class="next-step-btn" id="step4Next" onclick="unlockStep(5)">Continue to Step 5 →</button>
+        </div>
+
+        <!-- Step 5: Multi-turn Conversations -->
+        <div class="step locked" id="step5">
+            <div class="step-number">5</div>
+            <h2>Having a Conversation</h2>
+            <p>The real power comes from multi-turn conversations. You can keep the context by including previous messages in your requests.</p>
+
+            <div class="code-block">
+<span class="highlight">messages</span>: [
+  { <span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"What's the capital of France?"</span> },
+  { <span class="string">"role"</span>: <span class="string">"assistant"</span>, <span class="string">"content"</span>: <span class="string">"The capital of France is Paris."</span> },
+  { <span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"What's famous there?"</span> }
+]
+            </div>
+
+            <p>Notice how the second question references "there" - Claude knows we're talking about Paris because of the conversation history!</p>
+
+            <div class="interactive-box">
+                <p><strong>Try a conversation!</strong> Each message builds on the previous ones:</p>
+                <div id="conversationArea">
+                    <div class="input-group">
+                        <textarea id="convPrompt" placeholder="Start with: Tell me about pizza"></textarea>
+                    </div>
+                    <button onclick="sendConversationMessage()">Send Message</button>
+                    
+                    <div id="conversationHistory" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+
+            <button class="next-step-btn" id="step5Next" onclick="showCelebration()">Complete Tutorial! 🎉</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="celebration" id="celebration">
+        <h1 style="font-size: 3rem; margin-bottom: 20px;">🎉</h1>
+        <h2 style="margin-bottom: 15px;">Congratulations!</h2>
+        <p style="margin-bottom: 30px;">You've learned the fundamentals of the Claude API!</p>
+        <div style="text-align: left; margin: 30px 0;">
+            <p><strong>You now know how to:</strong></p>
+            <p>✓ Structure API requests</p>
+            <p>✓ Make calls to Claude</p>
+            <p>✓ Parse responses</p>
+            <p>✓ Build multi-turn conversations</p>
+        </div>
+        <button onclick="hideCelebration()">Start Building! 🚀</button>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let userQuestion = "";
+        let conversationHistory = [];
+
+        function updateProgress() {
+            const progress = (currentStep / 5) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function completeStep1() {
+            const question = document.getElementById('firstQuestion').value.trim();
+            if (!question) {
+                alert('Please enter a question first!');
+                return;
+            }
+            
+            userQuestion = question;
+            document.getElementById('step1Success').style.display = 'flex';
+            document.getElementById('step1').classList.add('completed');
+            
+            setTimeout(() => {
+                unlockStep(2);
+            }, 800);
+        }
+
+        function unlockStep(stepNum) {
+            currentStep = stepNum;
+            updateProgress();
+            
+            const step = document.getElementById('step' + stepNum);
+            step.classList.remove('locked');
+            step.classList.add('visible');
+            
+            // Populate step 2 with user's question
+            if (stepNum === 2) {
+                document.getElementById('step2Question').value = userQuestion;
+            }
+            
+            // Smooth scroll to the step
+            setTimeout(() => {
+                step.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        function completeStep2() {
+            const maxTokens = document.getElementById('maxTokens').value;
+            const requestStructure = {
+                model: "claude-sonnet-4-20250514",
+                max_tokens: parseInt(maxTokens),
+                messages: [
+                    { role: "user", content: userQuestion }
+                ]
+            };
+            
+            document.getElementById('structuredRequest').textContent = JSON.stringify(requestStructure, null, 2);
+            document.getElementById('step2Output').style.display = 'block';
+            document.getElementById('step2').classList.add('completed');
+            document.getElementById('step2Next').classList.add('show');
+        }
+
+        async function makeAPICall() {
+            const prompt = document.getElementById('apiPrompt').value.trim();
+            if (!prompt) {
+                alert('Please enter a message first!');
+                return;
+            }
+
+            const button = document.getElementById('apiCallBtn');
+            button.disabled = true;
+            button.innerHTML = '<span class="loading"></span> Sending...';
+
+            try {
+                const response = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 1000,
+                        messages: [
+                            { role: "user", content: prompt }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                const message = data.content[0].text;
+
+                document.getElementById('claudeResponse').textContent = message;
+                document.getElementById('apiResponse').style.display = 'block';
+                document.getElementById('step3').classList.add('completed');
+                document.getElementById('step3Next').classList.add('show');
+
+            } catch (error) {
+                document.getElementById('claudeResponse').textContent = "Response: " + error.message;
+                document.getElementById('apiResponse').style.display = 'block';
+            }
+
+            button.disabled = false;
+            button.textContent = 'Send to Claude ✨';
+        }
+
+        function parseResponse(choice) {
+            const resultDiv = document.getElementById('parseResult');
+            if (choice === 'B') {
+                resultDiv.innerHTML = '<div class="success"><span>Correct! The "text" field contains Claude\'s actual message.</span></div>';
+                document.getElementById('step4').classList.add('completed');
+                document.getElementById('step4Next').classList.add('show');
+            } else {
+                resultDiv.innerHTML = '<p style="color: var(--rust);">Not quite! That\'s metadata about the request. Try the other option.</p>';
+            }
+            resultDiv.style.display = 'block';
+        }
+
+        async function sendConversationMessage() {
+            const prompt = document.getElementById('convPrompt').value.trim();
+            if (!prompt) return;
+
+            conversationHistory.push({ role: "user", content: prompt });
+            
+            const historyDiv = document.getElementById('conversationHistory');
+            const userMsg = document.createElement('div');
+            userMsg.style.cssText = 'background: rgba(212, 116, 92, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 10px;';
+            userMsg.innerHTML = '<strong>You:</strong> ' + prompt;
+            historyDiv.appendChild(userMsg);
+
+            document.getElementById('convPrompt').value = '';
+
+            try {
+                const response = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 1000,
+                        messages: conversationHistory
+                    })
+                });
+
+                const data = await response.json();
+                const message = data.content[0].text;
+
+                conversationHistory.push({ role: "assistant", content: message });
+
+                const assistantMsg = document.createElement('div');
+                assistantMsg.style.cssText = 'background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 2px solid rgba(30, 52, 86, 0.1);';
+                assistantMsg.innerHTML = '<strong>Claude:</strong> ' + message;
+                historyDiv.appendChild(assistantMsg);
+
+                if (conversationHistory.length >= 4) {
+                    document.getElementById('step5').classList.add('completed');
+                    document.getElementById('step5Next').classList.add('show');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function toggleAccordion(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('open');
+        }
+
+        function showCelebration() {
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('celebration').classList.add('show');
+            updateProgress();
+        }
+
+        function hideCelebration() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('celebration').classList.remove('show');
+        }
+
+        // Initialize
+        updateProgress();
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('locked')) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.step').forEach(step => {
+            observer.observe(step);
+        });
+    </script>
+</body>
+</html>

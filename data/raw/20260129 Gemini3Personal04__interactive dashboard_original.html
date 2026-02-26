@@ -1,0 +1,24 @@
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<div id="dashboard" style="width:100%;height:90vh;"></div>
+<script>
+    const data = [
+        // Global AI Adoption Trends
+        { x: ['2023', '2024', '2025', '2026'], y: [15, 25, 30, 35], name: 'Individuals', type: 'scatter', line: {color: '#1f77b4', width: 4} },
+        { x: ['2023', '2024', '2025', '2026'], y: [8, 12, 20.2, 25], name: 'Firms', type: 'scatter', line: {color: '#ff7f0e', width: 4} },
+        { x: ['2023', '2024', '2025', '2026'], y: [40, 55, 68, 75], name: 'Students', type: 'scatter', line: {dash: 'dash', color: '#2ca02c'} },
+        // Sector Adoption
+        { x: [57.3, 25, 18, 15, 12, 10.5], y: ['Tech', 'Retail', 'Finance', 'Health', 'Edu', 'Mfg'], type: 'bar', orientation: 'h', xaxis: 'x2', yaxis: 'y2', marker: {color: '#1f77b4'} }
+    ];
+    const layout = {
+        title: '<b>AI ADOPTION & IMPACT DASHBOARD (2026)</b>',
+        grid: {rows: 1, columns: 2, pattern: 'independent'},
+        template: 'plotly_white',
+        annotations: [
+            { text: "Global AI Adoption Trends (2023-2026)", showarrow: false, x: 0.15, y: 1.1, xref: 'paper', yref: 'paper', font: {size: 14} },
+            { text: "Sector Usage (%)", showarrow: false, x: 0.85, y: 1.1, xref: 'paper', yref: 'paper', font: {size: 14} }
+        ],
+        showlegend: true,
+        legend: {orientation: 'h', y: -0.1}
+    };
+    Plotly.newPlot('dashboard', data, layout);
+</script>
