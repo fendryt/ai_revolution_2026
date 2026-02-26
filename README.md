@@ -1,7 +1,7 @@
 # AI Revolution Dashboard (2026)
 
 ## Interactive Dashboard
-"The State of AI Revolution" [click here](https://pre-anthropic-io.vercel.app/).
+"The State of AI Revolution" [click here](https://ai-revolution-2026.vercel.app/).
 
 ![AI Revolution Dashboard (2026)](images/AI_Revolution_2026_Dashboard.gif)
 
